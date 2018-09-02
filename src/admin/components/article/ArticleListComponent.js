@@ -24,9 +24,6 @@ import axios from 'axios';
 import Style from '../../style/article/ArticleListComponentStyle';
 
 class ArticleTableToolbar extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     deleteArticles = () => {
         const {onDelete} = this.props;
@@ -144,8 +141,7 @@ class ArticleListComponent extends Component {
         const {selected} = this.state;
         const {articles} = this.state;
 
-        selected.map(articleId => {
-
+        selected.forEach(articleId => {
             axios.delete('/api/article/delete/' + articleId)
                 .then(response => {
 

@@ -29,16 +29,12 @@ class AlertDialogComponent extends Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button button component={Link}
-                                to={redirectTo}
-                                color="primary" autoFocus>
+                        <Link to={redirectTo}>
                             Go to pages
-                        </Button>
-                        <Button component={Link}
-                                to="/admin/dashboard"
-                                color="primary">
+                        </Link>
+                        <Link to="/admin/dashboard">
                             Back to dashboard
-                        </Button>
+                        </Link>
                     </DialogActions>
                 </Dialog>
             </div>

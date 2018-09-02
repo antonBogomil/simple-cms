@@ -15,7 +15,8 @@ const style = theme => ({
     buttonContainer: {
         display: 'flex',
         justifyContent: 'flex-end',
-        paddingTop: '15px'
+        paddingTop: '15px',
+        width: '100%'
     },
 
     marginDiv: {

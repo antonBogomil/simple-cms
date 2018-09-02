@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
-import {BrowserRouter, Switch, Route, withRouter} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
 import axios from 'axios';
 import PageViewComponent from "./PageViewComponent";
-
 
 
 /***

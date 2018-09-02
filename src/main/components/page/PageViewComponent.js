@@ -4,10 +4,6 @@ import React, {Component} from 'react';
 import '../../style/page/PageViewComponentStyle.css';
 
 class PageViewComponent extends Component {
-    constructor(props) {
-        super(props);
-
-    }
 
     componentWillMount() {
         const {page} = this.props;

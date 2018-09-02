@@ -54,12 +54,7 @@ class LoginComponent extends Component {
                 const code = response.data.code;
 
                 if (code === 200) {
-                    this.props.history.push({
-                        pathname: '/admin/dashboard',
-                        state: {
-                            isAuth: true
-                        }
-                    })
+                    this.props.history.push('/admin/login');
                 } else {
                     alert(response.data);
                 }

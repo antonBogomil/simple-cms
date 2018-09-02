@@ -46,14 +46,14 @@ class App extends Component {
         const {isDataLoaded} = this.state;
 
         return (
-            <div>
+            <div className="fullHeigth">
                 {isDataLoaded ? (
                     <BrowserRouter>
                         <Switch>
-                          /*Main page router */
+                            {/*Main page router */}
                             <Route exact path="/" component={MainComponent}/>
 
-                          /* Admin routings */
+                            {/* Admin routings */}
                             <Route exact path="/admin"
                                    render={() => (isAuthenticated ? (
                                            <Redirect to={"/admin/dashboard"}/>
@@ -61,7 +61,11 @@ class App extends Component {
                                    )}
                             />
                             <Route exact path="/admin/login"
-                                   component={LoginComponent}/>
+                                   render={() => (
+                                       isAuthenticated ? (<Redirect to={"/admin/dashboard"}/>)
+                                           : (<LoginComponent/>)
+                                   )}/>
+
                             <Route exact path="/admin/logout"
                                    component={LogoutComponent}/>
 
@@ -69,8 +73,8 @@ class App extends Component {
                                           isAuth={isAuthenticated}
                                           component={AdminSiteRouter}/>
 
-                          /* another main site routings */
-                            <Route  render={(props) => <PageComponent {...props} />}/>
+                            {/* another main site routings */}
+                            <Route render={(props) => <PageComponent {...props} />}/>
                         </Switch>
                     </BrowserRouter>
                 ) : null}

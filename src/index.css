@@ -2,4 +2,16 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: auto;
+}
+
+#root, .fullHeigth{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow: auto;
 }

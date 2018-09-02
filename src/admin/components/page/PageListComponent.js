@@ -29,9 +29,6 @@ import Style from '../../style/page/PageListComponentStyle';
 import InfoSnackBar from "../utils/InfoSnackBar";
 
 class PageTableToolbar extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     handleDeletePage = () => {
         const {onDelete} = this.props;
@@ -76,9 +73,6 @@ class PageTableToolbar extends Component {
 PageTableToolbar = withStyles(Style)(PageTableToolbar);
 
 class PageArticlesExpansionPanelComponent extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const {articles} = this.props;
@@ -87,7 +81,7 @@ class PageArticlesExpansionPanelComponent extends Component {
             <div style={{width: '100%'}}>
                 {articles.length === 0 ? "No articles yet" : (
                     <Select value="">
-                        {articles.map(article => {
+                        {articles.forEach(article => {
                             return (<MenuItem
                                 value={article.id}
                                 key={article.id}
@@ -191,7 +185,7 @@ class PageListComponent extends Component {
         const {selected} = this.state;
         const {pages} = this.state;
 
-        selected.map(pageId => {
+        selected.forEach(pageId => {
             axios.delete('/api/page/delete/' + pageId)
                 .then(response => {
                     const code = response.data.code;

@@ -7,11 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import Style from './style/ContentComponentStyle';
 
 class ContentComponent extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
         const {classes} = this.props;
         const {navigation} = this.props;
