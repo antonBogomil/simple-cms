@@ -226,7 +226,7 @@ class EditArticleComponent extends Component {
                 ) : null}
 
                 {responseMessage !== '' ? (
-                    <InfoSnackBar message={responseMessage}/>
+                    <InfoSnackBar timeOut={2000} message={responseMessage}/>
                 ) : ''
                 }
 

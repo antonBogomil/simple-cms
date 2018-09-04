@@ -20,27 +20,31 @@ class InfoSnackBar extends Component {
 
     render() {
         const {message} = this.props;
+        const {timeOut} = this.props;
         const {open} = this.state;
 
 
         return (
-            <Snackbar
-                anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
-                open={open}
-                autoHideDuration={5000}
-                ContentProps={{'aria-describedby': 'message-id',}}
-                message={message}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        onClick={this.handleClose}
-                    >
-                        <CloseIcon/>
-                    </IconButton>,
-                ]}
-            />
+                <Snackbar
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'left',}}
+                    open={open}
+                    onClose={this.handleClose}
+                    autoHideDuration={timeOut}
+                    ContentProps={{'aria-describedby': 'message-id',}}
+                    message={message}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            onClick={this.handleClose}
+                        >
+                            <CloseIcon/>
+                        </IconButton>,
+                    ]}
+                />
+
+
         )
     }
 }

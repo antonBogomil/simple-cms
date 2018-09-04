@@ -80,8 +80,11 @@ class PageArticlesExpansionPanelComponent extends Component {
         return (
             <div style={{width: '100%'}}>
                 {articles.length === 0 ? "No articles yet" : (
-                    <Select value="">
-                        {articles.forEach(article => {
+                    <Select>
+                        <MenuItem value="" disabled>
+                            Choose an article
+                        </MenuItem>
+                        {articles.map(article => {
                             return (<MenuItem
                                 value={article.id}
                                 key={article.id}
@@ -124,9 +127,8 @@ class PageListComponent extends Component {
                 const pages = response.data;
                 this.setState({pages: pages});
             });
-
-
     }
+
 
     handleToggleAll = () => {
         const {isSelectAll} = this.state;
@@ -313,7 +315,7 @@ class PageListComponent extends Component {
 
 
                 {responseMessage ? (
-                    <InfoSnackBar message={responseMessage}/>
+                    <InfoSnackBar timeOut={2000} message={responseMessage}/>
                 ) : ''}
             </div>
         );

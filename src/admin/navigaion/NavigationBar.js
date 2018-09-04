@@ -75,7 +75,7 @@ class NavigationBar extends React.Component {
                         </Grid>
                     </div>
                     <Divider />
-                    <List>
+                    <List style={{paddingBottom: '0px'}}>
                         <MenuData/>
                     </List>
                     <Divider />

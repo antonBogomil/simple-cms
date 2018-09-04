@@ -54,9 +54,12 @@ class LoginComponent extends Component {
                 const code = response.data.code;
 
                 if (code === 200) {
-                    this.props.history.push('/admin/login');
-                } else {
-                    alert(response.data);
+                    this.props.history.push({
+                        pathname: '/admin/login/redirect',
+                        state: {
+                            isAuth: true,
+                        }
+                    });
                 }
             }).catch(exception => {
             console.log(exception);

@@ -121,7 +121,7 @@ class EditPageComponent extends Component {
 
                                 <FormControl fullWidth>
                                     <FormLabel component="legend">
-                                        If you choose the main page, the previous main page will be overwritten to this
+                                        If you choose the main page, the previous main page will be overwritten to this.
                                         Only one page can be main.
                                     </FormLabel>
                                     <FormControlLabel
@@ -236,7 +236,7 @@ class EditPageComponent extends Component {
                     ) : null}
 
                     {responseMessage !== '' ? (
-                        <InfoSnackBar message={responseMessage}/>
+                        <InfoSnackBar timeOut={2000} message={responseMessage}/>
                     ) : ''
                     }
 

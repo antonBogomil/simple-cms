@@ -211,7 +211,7 @@ class AddArticleComponent extends Component {
 
 
                     {responseMessage !== '' ? (
-                        <InfoSnackBar message={responseMessage}/>
+                        <InfoSnackBar timeOut={2000} message={responseMessage}/>
                     ) : ''
                     }
 

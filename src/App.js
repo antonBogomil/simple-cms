@@ -60,10 +60,17 @@ class App extends Component {
                                        ) : <Redirect to={"/admin/login"}/>
                                    )}
                             />
+
                             <Route exact path="/admin/login"
                                    render={() => (
                                        isAuthenticated ? (<Redirect to={"/admin/dashboard"}/>)
                                            : (<LoginComponent/>)
+                                   )}/>
+                            <Route exact path="/admin/login/redirect"
+                                   render={props => (
+                                       props.location.state.isAuth
+                                           ? <Redirect to={"/admin/dashboard"}/>
+                                           : <Redirect to={"/admin/login"} />
                                    )}/>
 
                             <Route exact path="/admin/logout"
