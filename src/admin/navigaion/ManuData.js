@@ -1,6 +1,6 @@
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import ListIcon from '@material-ui/icons/List'
 import AddIcon from '@material-ui/icons/Add';
