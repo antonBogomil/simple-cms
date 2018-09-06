@@ -46,7 +46,7 @@ class App extends Component {
         const {isDataLoaded} = this.state;
 
         return (
-            <div className="fullHeigth">
+            <div className="fullHeight">
                 {isDataLoaded ? (
                     <BrowserRouter>
                         <Switch>
@@ -79,9 +79,6 @@ class App extends Component {
                             <PrivateRoute path="/admin"
                                           isAuth={isAuthenticated}
                                           component={AdminSiteRouter}/>
-
-                            {/* another main site routings */}
-                            <Route render={(props) => <PageComponent {...props} />}/>
                         </Switch>
                     </BrowserRouter>
                 ) : null}

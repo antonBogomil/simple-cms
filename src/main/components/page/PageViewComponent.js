@@ -18,11 +18,7 @@ class PageViewComponent extends Component {
         const {page} = this.props;
         return (
             <div>
-                <Helmet>
-                    <link rel="stylesheet" href="/static/css/main.min.css"/>
-                    <script src="/static/js/scripts.min.js"/>
-                    <script async type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1yN6cNWKQX2uiqLtlGPovJJ4I2ecx9G4&callback=vartaMap"/>
-                </Helmet>
+                <Helmet> </Helmet>
 
                 { page.articles ?
                     page.articles.map(article => {

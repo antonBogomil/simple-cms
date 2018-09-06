@@ -45,7 +45,7 @@ class PageComponent extends Component {
         return (
             <div>
                 {isPageLoaded ? (
-                    page ? (<PageViewComponent page={page}/>) : ("Not found")
+                    page ? (<PageViewComponent page={page}/>) : "Not found (make page)"
                 ) : null}
             </div>);
 
