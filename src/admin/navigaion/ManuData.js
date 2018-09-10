@@ -13,6 +13,7 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import PageViewIcon from '@material-ui/icons/Pageview';
 import ExitIcon from '@material-ui/icons/ExitToApp';
+import PermMediaIcon from '@material-ui/icons/PermMedia';
 
 import React, {Component} from "react";
 
@@ -89,6 +90,13 @@ class MenuData extends Component {
                         </ListItem>
                     </List>
                 </Collapse>
+
+                <ListItem button component={Link} to={"/admin/files"}>
+                    <ListItemIcon>
+                        <PermMediaIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="File manager"/>
+                </ListItem>
 
                 <ListItem button component={Link} to={"/"} target="_blank">
                     <ListItemIcon>

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 
-import axios from 'axios';
 // noinspection ES6UnusedImports
 import '../style/MainComponentStyle.css';
 import PageViewComponent from "./page/PageViewComponent";
