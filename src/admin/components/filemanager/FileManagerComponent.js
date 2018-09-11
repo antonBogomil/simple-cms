@@ -9,6 +9,8 @@ import FileViewComponent from "./FileViewComponent";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
+import BackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from '@material-ui/core/IconButton';
 
 
 class FileManagerComponent extends Component {
@@ -17,6 +19,7 @@ class FileManagerComponent extends Component {
 
         this.state = {
             currFolder: [],
+            pathHistory: [],
             currentPath: ''
         };
     }
@@ -26,22 +29,41 @@ class FileManagerComponent extends Component {
         axios.get(url)
             .then(response => {
                 const root = response.data;
+
+                const {pathHistory} = this.state;
+                pathHistory.push(root.name);
+
                 this.setState({
                     currFolder: root,
-                    currentPath: root.path
+                    currentPath: root.path,
+                    pathHistory: pathHistory
                 });
             })
             .catch(exception => {
                 console.log("FileManagerComponent:" + exception);
             })
+
     };
 
     componentDidMount() {
         this.handleGetFolder();
     }
 
-    openFolder = file => {
-        this.handleGetFolder(file);
+    openFolder = fileName => {
+        this.handleGetFolder(fileName);
+    };
+
+    handleGoBack = () => {
+        const {pathHistory} = this.state;
+
+        //delete current folder name
+        pathHistory.pop();
+
+        // remove folder name and open it
+        const prevFolder = pathHistory.pop();
+        this.handleGetFolder(prevFolder);
+
+        this.setState({pathHistory: pathHistory});
     };
 
 
@@ -54,14 +76,19 @@ class FileManagerComponent extends Component {
             <ContentComponent navigation="Filemanager / root">
                 <Grid container>
 
-                    <Grid item xs={6}>
-                        <Typography className={classes.managerPath} variant="title">
-                            \{currentPath}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="title">Options</Typography>
-                        <Divider/>
+                    <Grid item xs={8} className={classes.managerPath}>
+                        <Grid item style={{marginBottom: '25px'}}>
+                            <Typography variant="title">
+                                {currentPath}
+                            </Typography>
+                        </Grid>
+
+                        <Grid item xs={2}>
+                            <IconButton color="primary"
+                                        onClick={this.handleGoBack}>
+                                <BackIcon/>
+                            </IconButton>
+                        </Grid>
                     </Grid>
 
                     <Grid item xs={8}
@@ -70,17 +97,19 @@ class FileManagerComponent extends Component {
                         {currFolder.children ? (
                             currFolder.children.map(file => {
                                 return (
-                                    <FileViewComponent
-                                        key={file.createDate}
-                                        onOpenFolder={this.openFolder}
-                                        file={file}/>
+                                        <FileViewComponent
+                                            key={file.createDate}
+                                            onOpenFolder={this.openFolder}
+                                            file={file}/>
                                 )
                             })
                         ) : (
-                            <Typography variant="caption"
-                                        color="primary">
-                                Create a foder or donwload a file
-                            </Typography>
+
+                            <Grid item xs={12} className={classes.emptyFolderAlert}>
+                                <Typography variant="caption">
+                                    Create a folder or upload a file
+                                </Typography>
+                            </Grid>
                         )}
                     </Grid>
 

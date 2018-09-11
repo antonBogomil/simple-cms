@@ -5,6 +5,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import FileIcon from '@material-ui/icons/FileCopy';
 import Typography from '@material-ui/core/Typography';
 import prettyBytes from 'pretty-bytes';
+import AnyFileIcon, {defaultStyles} from 'react-file-icon';
 
 import Grid from "@material-ui/core/Grid";
 
@@ -18,17 +19,22 @@ const style = theme => ({
         textAlign: 'center',
         padding: '20px',
         margin: '10px',
+        wordBreak: 'break-word',
 
         '&:hover': {
             cursor: 'pointer',
+            backgroundColor: 'rgba(63, 81, 181, 0.08)'
         },
     },
 
 
     iconStyle: {
         transform: "scale(2,2)",
-        marginBottom: '10px'
-    }
+        marginBottom: '10px',
+        height: '30px',
+        width: '30px'
+    },
+
 });
 
 class FileViewComponent extends Component {
@@ -42,20 +48,19 @@ class FileViewComponent extends Component {
     render() {
         const {classes} = this.props;
         const {file} = this.props;
+        const fileExtension = file.name.split('.')[1];
 
         return (
             <Grid container
-                  item xs={2}
+                  item xs={1}
                   className={classes.viewContainer}
                   onClick={file.directory ? this.openFolder : null}
             >
-                {
-                    file.directory
-                        ?
-                        <FolderIcon color="primary" className={classes.iconStyle}/>
-                        :
-                        <FileIcon color="primary" className={classes.iconStyle}/>
+                {fileExtension === undefined
+                    ? <FolderIcon color="primary" className={classes.iconStyle}/>
+                    : (<AnyFileIcon extension={fileExtension} {...defaultStyles[fileExtension]} />)
                 }
+
                 <Typography variant="caption">{file.name}</Typography>
             </Grid>
         );

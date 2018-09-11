@@ -1,13 +1,22 @@
 const styles = theme => ({
-    managerPath: {
-        padding: '20px'
-    },
+        managerPath: {
+            margin: '40px 20px 0px 20px'
+        },
 
-    folderContainer:{
-        display: 'flex',
-        flexDirection: 'row',
-        flexFlow: 'row wrap'
-    }
-});
+        folderContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            flexFlow: 'row wrap',
+            borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+            marginBottom: '40px'
+        },
+
+        emptyFolderAlert: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex'
+        }
+    })
+;
 
 export default styles;
