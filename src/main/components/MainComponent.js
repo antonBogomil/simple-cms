@@ -3,8 +3,7 @@ import PropType from 'prop-types';
 
 // noinspection ES6UnusedImports
 import '../style/MainComponentStyle.css';
-import PageViewComponent from "./page/PageViewComponent";
-import {Route, Switch} from "react-router-dom";
+import { Route } from "react-router-dom";
 import PageComponent from "./page/PageComponent";
 
 
