@@ -6,6 +6,7 @@ const styles = theme => ({
         folderContainer: {
             display: 'flex',
             flexDirection: 'row',
+            justifyContent: 'flex-start',
             flexFlow: 'row wrap',
             borderRight: '1px solid rgba(0, 0, 0, 0.12)',
             marginBottom: '40px'

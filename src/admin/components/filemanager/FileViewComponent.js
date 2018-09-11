@@ -2,12 +2,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import FolderIcon from '@material-ui/icons/Folder';
-import FileIcon from '@material-ui/icons/FileCopy';
 import Typography from '@material-ui/core/Typography';
-import prettyBytes from 'pretty-bytes';
-import AnyFileIcon, {defaultStyles} from 'react-file-icon';
+
 
 import Grid from "@material-ui/core/Grid";
+import SavebleIconComponent from "./SavebleIconComponent";
 
 
 const style = theme => ({
@@ -31,8 +30,8 @@ const style = theme => ({
     iconStyle: {
         transform: "scale(2,2)",
         marginBottom: '10px',
-        height: '30px',
-        width: '30px'
+        height: '45px',
+        width: '45px'
     },
 
 });
@@ -58,7 +57,7 @@ class FileViewComponent extends Component {
             >
                 {fileExtension === undefined
                     ? <FolderIcon color="primary" className={classes.iconStyle}/>
-                    : (<AnyFileIcon extension={fileExtension} {...defaultStyles[fileExtension]} />)
+                    : <SavebleIconComponent file={file}/>
                 }
 
                 <Typography variant="caption">{file.name}</Typography>

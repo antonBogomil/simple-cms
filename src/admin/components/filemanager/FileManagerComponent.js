@@ -20,7 +20,8 @@ class FileManagerComponent extends Component {
         this.state = {
             currFolder: [],
             pathHistory: [],
-            currentPath: ''
+            currentPath: '',
+            isDataLoad: false
         };
     }
 
@@ -36,7 +37,8 @@ class FileManagerComponent extends Component {
                 this.setState({
                     currFolder: root,
                     currentPath: root.path,
-                    pathHistory: pathHistory
+                    pathHistory: pathHistory,
+                    isDataLoad: true
                 });
             })
             .catch(exception => {
@@ -71,50 +73,53 @@ class FileManagerComponent extends Component {
         const {classes} = this.props;
         const {currFolder} = this.state;
         const {currentPath} = this.state;
+        const {isDataLoad} = this.state;
 
         return (
-            <ContentComponent navigation="Filemanager / root">
-                <Grid container>
+            <ContentComponent navigation="File-manager / root">
+                {
+                    isDataLoad ? (
+                        <Grid container>
+                            <Grid item xs={8} className={classes.managerPath}>
+                                <Grid item style={{marginBottom: '25px'}}>
+                                    <Typography variant="title">
+                                        {currentPath}
+                                    </Typography>
+                                </Grid>
 
-                    <Grid item xs={8} className={classes.managerPath}>
-                        <Grid item style={{marginBottom: '25px'}}>
-                            <Typography variant="title">
-                                {currentPath}
-                            </Typography>
-                        </Grid>
-
-                        <Grid item xs={2}>
-                            <IconButton color="primary"
-                                        onClick={this.handleGoBack}>
-                                <BackIcon/>
-                            </IconButton>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item xs={8}
-                          className={classes.folderContainer}
-                    >
-                        {currFolder.children ? (
-                            currFolder.children.map(file => {
-                                return (
-                                        <FileViewComponent
-                                            key={file.createDate}
-                                            onOpenFolder={this.openFolder}
-                                            file={file}/>
-                                )
-                            })
-                        ) : (
-
-                            <Grid item xs={12} className={classes.emptyFolderAlert}>
-                                <Typography variant="caption">
-                                    Create a folder or upload a file
-                                </Typography>
+                                <Grid item xs={2}>
+                                    <IconButton color="primary"
+                                                onClick={this.handleGoBack}>
+                                        <BackIcon/>
+                                    </IconButton>
+                                </Grid>
                             </Grid>
-                        )}
-                    </Grid>
 
+                            <Grid item xs={8}
+                                  className={classes.folderContainer}
+                            >
+                                {currFolder.children ? (
+                                    currFolder.children.map(file => {
+                                        return (
+                                            <FileViewComponent
+                                                key={file.createDate}
+                                                onOpenFolder={this.openFolder}
+                                                file={file}/>
+                                        )
+                                    })
+                                ) : (
 
-                </Grid>
+                                    <Grid item xs={12} className={classes.emptyFolderAlert}>
+                                        <Typography variant="caption">
+                                            Create a folder or upload a file
+                                        </Typography>
+                                    </Grid>
+                                )}
+                            </Grid>
+                        </Grid>
+
+                    ) : null
+                }
             </ContentComponent>
         );
     }
