@@ -6,37 +6,20 @@ import Typography from '@material-ui/core/Typography';
 
 
 import Grid from "@material-ui/core/Grid";
-import SavebleIconComponent from "./SavebleIconComponent";
+import FileIcon, {defaultStyles} from 'react-file-icon';
+import SaveIcon from '@material-ui/icons/CloudDownload';
 
 
-const style = theme => ({
-
-    viewContainer: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '20px',
-        margin: '10px',
-        wordBreak: 'break-word',
-
-        '&:hover': {
-            cursor: 'pointer',
-            backgroundColor: 'rgba(63, 81, 181, 0.08)'
-        },
-    },
-
-
-    iconStyle: {
-        transform: "scale(2,2)",
-        marginBottom: '10px',
-        height: '45px',
-        width: '45px'
-    },
-
-});
+import Style from '../../style/filemanager/FileViewComponentStyle';
 
 class FileViewComponent extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isHover: false,
+        }
+    }
 
     openFolder = () => {
         const {file} = this.props;
@@ -44,31 +27,51 @@ class FileViewComponent extends Component {
         onOpenFolder(file.name);
     };
 
+    downloadFile = () => {
+        const {file} = this.props;
+        const {onDownload} = this.props;
+        onDownload(file);
+    };
+
     render() {
         const {classes} = this.props;
         const {file} = this.props;
-        const fileExtension = file.name.split('.')[1];
+        const ext = file.name.split('.')[1];
+
+
+        const {isHover} = this.state;
 
         return (
             <Grid container
                   item xs={1}
                   className={classes.viewContainer}
-                  onClick={file.directory ? this.openFolder : null}
-            >
-                {fileExtension === undefined
-                    ? <FolderIcon color="primary" className={classes.iconStyle}/>
-                    : <SavebleIconComponent file={file}/>
-                }
+                  onClick={file.directory ? this.openFolder : this.downloadFile}
+                  onMouseEnter={() => this.setState({isHover: true})}
+                  onMouseLeave={() => this.setState({isHover: false})}
 
-                <Typography variant="caption">{file.name}</Typography>
+            >
+                {ext === undefined
+                    ? <FolderIcon color="primary" className={classes.iconStyle}/>
+                    : isHover
+                        ? <SaveIcon color="primary" className={classes.saveIcon}/>
+                        : <FileIcon size={45} extension={ext} {...defaultStyles[ext]}/>
+                }
+                <Typography className={classes.fileLabel} variant="caption">{file.name}</Typography>
+
             </Grid>
+
         );
     }
 
 }
 
 FileViewComponent.propType = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    isHover: PropTypes.bool.isRequired,
+    file: PropTypes.object.isRequired,
+    onDownload: PropTypes.func.isRequired,
+    onOpenFolder: PropTypes.func.isRequired,
+
 };
 
-export default withStyles(style)(FileViewComponent);
+export default withStyles(Style)(FileViewComponent);

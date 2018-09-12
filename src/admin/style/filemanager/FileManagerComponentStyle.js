@@ -16,7 +16,47 @@ const styles = theme => ({
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex'
+        },
+
+        viewContainer: {
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '20px',
+            margin: '10px',
+            wordBreak: 'break-word',
+
+            '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: 'rgba(63, 81, 181, 0.08)'
+            },
+        },
+
+        optionsContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            paddingLeft: '20px'
+        },
+
+        managerOption: {
+            '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: 'rgba(63, 81, 181, 0.08)'
+            },
+        },
+
+        iconSize: {
+            transform: "scale(2,2)",
+            height: '20px',
+            width: '20px'
+        },
+
+        folderInput: {
+            marginLeft: '10px',
         }
+
     })
 ;
 

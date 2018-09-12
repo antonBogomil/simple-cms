@@ -2,15 +2,111 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import axios from 'axios';
-
 import Style from '../../style/filemanager/FileManagerComponentStyle';
 import ContentComponent from "../../ContentComponent";
 import FileViewComponent from "./FileViewComponent";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
+import CreateFolderIcon from '@material-ui/icons/CreateNewFolder';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import TextField from '@material-ui/core/TextField';
+
+
+class FileManagerBar extends Component {
+
+    goBack = () => {
+        const {onMoveBack} = this.props;
+        onMoveBack();
+    };
+
+    render() {
+        const {classes} = this.props;
+        const {currentPath} = this.props;
+
+        return (
+            <Grid item xs={8} className={classes.managerPath}>
+                <Grid item style={{marginBottom: '25px'}}>
+                    <Typography variant="title">
+                        {currentPath}
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={2}>
+                    <IconButton color="primary"
+                                onClick={this.goBack}>
+                        <BackIcon/>
+                    </IconButton>
+                </Grid>
+            </Grid>
+
+        )
+    }
+}
+
+FileManagerBar = withStyles(Style)(FileManagerBar);
+
+
+class FileManagerOptions extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            folderName: '',
+        }
+    }
+
+
+    handleCreateFolder = () => {
+        const {onFolderCreate} = this.props;
+        const {folderName} = this.state;
+        this.setState({folderName: ''})
+
+        onFolderCreate(folderName);
+
+    };
+
+    render() {
+        const {classes} = this.props;
+
+        return (
+            <Grid item xs={4}
+                  className={classes.optionsContainer}>
+
+                <Grid item xs={12}>
+
+                    <IconButton onClick={this.handleCreateFolder}>
+                        <CreateFolderIcon color="primary"
+                                          titleAccess="Create folder"
+                                          className={classes.iconSize}
+                        />
+                    </IconButton>
+
+                    <TextField
+                        required
+                        className={classes.folderInput}
+                        label="Enter folder name"
+                        onChange={event => {
+                            this.setState({folderName: event.target.value})
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <IconButton>
+                        <CloudUploadIcon color="primary"
+                                         titleAccess="Upload file"
+                                         className={classes.iconSize}/>
+                    </IconButton>
+                </Grid>
+
+            </Grid>
+        );
+    }
+}
+
+FileManagerOptions = withStyles(Style)(FileManagerOptions);
 
 
 class FileManagerComponent extends Component {
@@ -18,10 +114,9 @@ class FileManagerComponent extends Component {
         super(props);
 
         this.state = {
-            currFolder: [],
+            isDataLoad: false,
+            currFolder: {},
             pathHistory: [],
-            currentPath: '',
-            isDataLoad: false
         };
     }
 
@@ -55,6 +150,39 @@ class FileManagerComponent extends Component {
         this.handleGetFolder(fileName);
     };
 
+    createFolder = folderName => {
+        const {currFolder} = this.state;
+
+        //in post method data is the second param, so skip this argument
+        axios.post('/api/folder/create', "" , {
+            params: {
+                folderName: folderName,
+                destPath: currFolder.name
+            }
+        })
+            .then(response => {
+                const code = response.data.code;
+
+                if (code === 201) {
+                    currFolder.children.push({name: folderName, createDate: new Date()});
+
+                    this.setState({currFolder: currFolder});
+                }
+            }).catch(exception => {
+            console.log(exception);
+        });
+
+    };
+
+    downloadFile = file => {
+        const link = document.createElement('a');
+        link.href = file.downloadLink;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     handleGoBack = () => {
         const {pathHistory} = this.state;
 
@@ -72,7 +200,7 @@ class FileManagerComponent extends Component {
     render() {
         const {classes} = this.props;
         const {currFolder} = this.state;
-        const {currentPath} = this.state;
+
         const {isDataLoad} = this.state;
 
         return (
@@ -80,35 +208,24 @@ class FileManagerComponent extends Component {
                 {
                     isDataLoad ? (
                         <Grid container>
-                            <Grid item xs={8} className={classes.managerPath}>
-                                <Grid item style={{marginBottom: '25px'}}>
-                                    <Typography variant="title">
-                                        {currentPath}
-                                    </Typography>
-                                </Grid>
 
-                                <Grid item xs={2}>
-                                    <IconButton color="primary"
-                                                onClick={this.handleGoBack}>
-                                        <BackIcon/>
-                                    </IconButton>
-                                </Grid>
-                            </Grid>
+                            <FileManagerBar onMoveBack={this.handleGoBack}
+                                            currentPath={currFolder.name
+                                            }/>
 
                             <Grid item xs={8}
-                                  className={classes.folderContainer}
-                            >
+                                  className={classes.folderContainer}>
                                 {currFolder.children ? (
                                     currFolder.children.map(file => {
                                         return (
                                             <FileViewComponent
                                                 key={file.createDate}
                                                 onOpenFolder={this.openFolder}
+                                                onDownload={this.downloadFile}
                                                 file={file}/>
                                         )
                                     })
                                 ) : (
-
                                     <Grid item xs={12} className={classes.emptyFolderAlert}>
                                         <Typography variant="caption">
                                             Create a folder or upload a file
@@ -116,6 +233,9 @@ class FileManagerComponent extends Component {
                                     </Grid>
                                 )}
                             </Grid>
+
+                            <FileManagerOptions onFolderCreate={this.createFolder}/>
+
                         </Grid>
 
                     ) : null
@@ -127,7 +247,9 @@ class FileManagerComponent extends Component {
 }
 
 FileManagerComponent.propType = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    currFolder: PropTypes.array.isRequired,
+    isDataLoad: PropTypes.bool.isRequired
 };
 
 export default withStyles(Style)(FileManagerComponent);
