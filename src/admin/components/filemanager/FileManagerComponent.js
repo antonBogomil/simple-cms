@@ -13,6 +13,8 @@ import CreateFolderIcon from '@material-ui/icons/CreateNewFolder';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import TextField from '@material-ui/core/TextField';
 
+import InfoSnackBar from '../utils/InfoSnackBar';
+
 
 class FileManagerBar extends Component {
 
@@ -69,6 +71,7 @@ class FileManagerOptions extends Component {
 
     render() {
         const {classes} = this.props;
+        const {folderName} = this.state;
 
         return (
             <Grid item xs={4}
@@ -87,6 +90,7 @@ class FileManagerOptions extends Component {
                         required
                         className={classes.folderInput}
                         label="Enter folder name"
+                        value={folderName}
                         onChange={event => {
                             this.setState({folderName: event.target.value})
                         }}
@@ -117,6 +121,7 @@ class FileManagerComponent extends Component {
             isDataLoad: false,
             currFolder: {},
             pathHistory: [],
+            errorMessage: ''
         };
     }
 
@@ -129,6 +134,14 @@ class FileManagerComponent extends Component {
                 const {pathHistory} = this.state;
                 pathHistory.push(root.name);
 
+                const child = root.children;
+
+                if(child !== undefined){
+                    //sort child, directory first
+                    child.sort((a,b) => b.directory - a.directory);
+                    console.log(child);
+                    root.children = child;
+                }
                 this.setState({
                     currFolder: root,
                     currentPath: root.path,
@@ -151,25 +164,25 @@ class FileManagerComponent extends Component {
     };
 
     createFolder = folderName => {
+        this.setState({errorMeesage: ''});
+
         const {currFolder} = this.state;
 
         //in post method data is the second param, so skip this argument
-        axios.post('/api/folder/create', "" , {
+        axios.post('/api/folder/create', "", {
             params: {
                 folderName: folderName,
                 destPath: currFolder.name
             }
-        })
-            .then(response => {
-                const code = response.data.code;
+        }).then(response => {
+            const status = response.status;
 
-                if (code === 201) {
-                    currFolder.children.push({name: folderName, createDate: new Date()});
+            if (status === 201) {
+                this.setState({currFolder: response.data})
+            }
 
-                    this.setState({currFolder: currFolder});
-                }
-            }).catch(exception => {
-            console.log(exception);
+        }).catch(exception => {
+            this.setState({errorMessage: exception.response.data.message});
         });
 
     };
@@ -200,7 +213,7 @@ class FileManagerComponent extends Component {
     render() {
         const {classes} = this.props;
         const {currFolder} = this.state;
-
+        const {errorMessage} = this.state;
         const {isDataLoad} = this.state;
 
         return (
@@ -235,6 +248,11 @@ class FileManagerComponent extends Component {
                             </Grid>
 
                             <FileManagerOptions onFolderCreate={this.createFolder}/>
+
+
+                            {errorMessage !== '' ? (
+                                <InfoSnackBar timeOut={2000} message={errorMessage}/>
+                            ) : null}
 
                         </Grid>
 

@@ -112,7 +112,8 @@ class AddArticleComponent extends Component {
                 })
             })
             .catch(exception => {
-                this.setState({responseMessage: exception.message});
+                const errorMgs = exception.response.data.message;
+                this.setState({responseMessage: errorMgs});
             });
     };
 
@@ -125,7 +126,8 @@ class AddArticleComponent extends Component {
                 });
             })
             .catch(exception => {
-                console.log(exception);
+                const errorMgs = exception.response.data.message;
+                this.setState({responseMessage: errorMgs});
             })
     }
 

@@ -49,7 +49,8 @@ class EditPageComponent extends Component {
                     responseMessage: response.data.message,
                 });
             }).catch(exception => {
-            console.log(exception);
+            const errorMgs = exception.response.data.message;
+            this.setState({responseMessage: errorMgs});
         })
 
     };
@@ -89,7 +90,8 @@ class EditPageComponent extends Component {
                 });
             })
             .catch(exception => {
-                console.log(exception);
+                const errorMgs = exception.response.data.message;
+                this.setState({responseMessage: errorMgs});
             })
     }
 
@@ -156,7 +158,7 @@ class EditPageComponent extends Component {
                                     <TextField placeholder={urlPlaceholder}
                                                fullWidth
                                                style={{marginTop: '16px'}}
-                                               value={page.isMainPage ?  '' : page.url}
+                                               value={page.isMainPage ? '' : page.url}
                                                onChange={(event) => this.handleEditPage(event, "url")}
                                                className={classes.marginDiv}
                                                id="url"

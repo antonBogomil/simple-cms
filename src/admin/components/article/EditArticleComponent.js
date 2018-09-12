@@ -86,7 +86,8 @@ class EditArticleComponent extends Component {
             .then(reponse => {
                 this.setState({responseMessage: reponse.data.message});
             }).catch(exception => {
-            console.log(exception);
+            const errorMgs = exception.response.data.message;
+            this.setState({responseMessage: errorMgs});
         });
     };
 

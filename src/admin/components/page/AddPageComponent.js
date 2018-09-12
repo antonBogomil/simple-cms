@@ -52,7 +52,8 @@ class AddPageComponent extends Component {
                     metaDescription: ''
                 });
             }).catch(exception => {
-            console.log(exception);
+                const errorMgs = exception.response.data.message;
+                this.setState({responseMessage: errorMgs});
         })
 
     };
