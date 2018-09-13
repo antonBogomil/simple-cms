@@ -1,3 +1,5 @@
+import green from '@material-ui/core/colors/green';
+
 const styles = theme => ({
         managerPath: {
             margin: '40px 20px 0px 20px',
@@ -17,7 +19,8 @@ const styles = theme => ({
             borderRight: '1px solid rgba(0, 0, 0, 0.12)',
             marginBottom: '40px',
             minHeight: '500px',
-            height: '500px'
+            height: '500px',
+            overflow: 'overlay'
         },
 
         emptyFolderAlert: {
@@ -27,29 +30,27 @@ const styles = theme => ({
         },
 
         optionsContainer: {
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
             paddingLeft: '20px',
-            marginBottom: '40px'
+            marginBottom: '40px',
         },
 
-        managerOption: {
-            '&:hover': {
-                cursor: 'pointer',
-                backgroundColor: 'rgba(63, 81, 181, 0.08)'
-            },
+        fileOption: {
+            marginBottom: '15px'
         },
 
-        iconSize: {
-            transform: "scale(2,2)",
-            height: '20px',
-            width: '20px'
+        circleButton: {
+            height: '56px',
+            width: '56px',
+            backgroundColor: '#3f51b5',
+
+            "& :hover":{
+                backgroundColor: '#303f9f'
+            }
         },
 
         folderInput: {
-            marginLeft: '10px',
-        }
+            marginLeft: '25px',
+        },
 
     })
 ;

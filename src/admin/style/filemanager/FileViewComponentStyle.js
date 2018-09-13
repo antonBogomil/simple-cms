@@ -10,6 +10,7 @@ const style = theme => ({
         margin: '10px',
         wordBreak: 'break-word',
         height: '150px',
+        minWidth: '100px',
 
         '&:hover': {
             cursor: 'pointer',

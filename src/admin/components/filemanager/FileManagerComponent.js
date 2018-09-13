@@ -8,12 +8,12 @@ import FileViewComponent from "./FileViewComponent";
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import BackIcon from '@material-ui/icons/ArrowBack';
-import IconButton from '@material-ui/core/IconButton';
-import CreateFolderIcon from '@material-ui/icons/CreateNewFolder';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 
 import InfoSnackBar from '../utils/InfoSnackBar';
+import UploadButton from "../utils/UploadButton";
 
 
 class FileManagerBar extends Component {
@@ -39,10 +39,10 @@ class FileManagerBar extends Component {
                 </Grid>
 
                 <Grid item xs={2}>
-                    <IconButton color="primary"
-                                onClick={this.goBack}>
+                    <Button color="primary"
+                            onClick={this.goBack}>
                         <BackIcon/>
-                    </IconButton>
+                    </Button>
                 </Grid>
             </Grid>
 
@@ -59,55 +59,95 @@ class FileManagerOptions extends Component {
 
         this.state = {
             folderName: '',
+            uploadComplete: 0
         }
     }
 
+    handleCreateFolder = event => {
+        event.preventDefault();
 
-    handleCreateFolder = () => {
         const {onFolderCreate} = this.props;
         const {folderName} = this.state;
-        this.setState({folderName: ''})
+        this.setState({folderName: ''});
 
         onFolderCreate(folderName);
+
+    };
+
+    uploadFile = files => {
+        const {currentFolder} = this.props;
+
+        Array.from(files).forEach(file => {
+
+            const data = new FormData();
+            data.set('file', file);
+            data.set('folderName', currentFolder);
+
+            axios.post('/api/file/store', data, {
+                onUploadProgress: event => {
+                    const total = event.total;
+
+                    this.setState({
+                        uploadComplete: Math.round(event.loaded * 100) / total
+                    })
+                }
+            }).then(response => {
+                const code = response.data.code;
+
+                if (code === 201) {
+                    const {onSuccess} = this.props;
+
+                    this.setState({uploadComplete: 0});
+
+                    onSuccess();
+                }
+            }).catch(exception => {
+                const msg = exception.response.data.message;
+                const {onFailure} = this.props;
+
+                onFailure(msg);
+            });
+
+
+        });
+
 
     };
 
     render() {
         const {classes} = this.props;
         const {folderName} = this.state;
+        const {uploadComplete} = this.state;
 
         return (
             <Grid item xs={4}
                   className={classes.optionsContainer}>
+                <Grid item xs={12} className={classes.fileOption}>
 
-                <Grid item xs={12}>
+                    <form onSubmit={this.handleCreateFolder}>
+                        <Button type="submit"
+                                variant="fab"
+                                color="primary">
+                            <AddIcon titleAccess="Create folder"/>
+                        </Button>
 
-                    <IconButton onClick={this.handleCreateFolder}>
-                        <CreateFolderIcon color="primary"
-                                          titleAccess="Create folder"
-                                          className={classes.iconSize}
+                        <TextField
+                            required
+                            className={classes.folderInput}
+                            label="Enter folder name"
+                            value={folderName}
+                            onChange={event => {
+                                this.setState({folderName: event.target.value})
+                            }}
                         />
-                    </IconButton>
-
-                    <TextField
-                        required
-                        className={classes.folderInput}
-                        label="Enter folder name"
-                        value={folderName}
-                        onChange={event => {
-                            this.setState({folderName: event.target.value})
-                        }}
-                    />
+                    </form>
                 </Grid>
 
-                <Grid item xs={12}>
-                    <IconButton>
-                        <CloudUploadIcon color="primary"
-                                         titleAccess="Upload file"
-                                         className={classes.iconSize}/>
-                    </IconButton>
+                <Grid item xs={12} className={classes.fileOption}>
+                    <UploadButton
+                        onUpload={this.uploadFile}
+                        complete={uploadComplete}/>
                 </Grid>
-
             </Grid>
         );
     }
@@ -124,7 +164,7 @@ class FileManagerComponent extends Component {
             isDataLoad: false,
             currFolder: {},
             pathHistory: [],
-            errorMessage: ''
+            infoMessage: ''
         };
     }
 
@@ -139,10 +179,9 @@ class FileManagerComponent extends Component {
 
                 const child = root.children;
 
-                if(child !== undefined){
+                if (child !== undefined) {
                     //sort child, directory first
-                    child.sort((a,b) => b.directory - a.directory);
-                    console.log(child);
+                    child.sort((a, b) => b.directory - a.directory);
                     root.children = child;
                 }
                 this.setState({
@@ -167,7 +206,7 @@ class FileManagerComponent extends Component {
     };
 
     createFolder = folderName => {
-        this.setState({errorMeesage: ''});
+        this.setState({infoMeesage: ''});
 
         const {currFolder} = this.state;
 
@@ -185,7 +224,7 @@ class FileManagerComponent extends Component {
             }
 
         }).catch(exception => {
-            this.setState({errorMessage: exception.response.data.message});
+            this.setState({infoMessage: exception.response.data.message});
         });
 
     };
@@ -197,6 +236,15 @@ class FileManagerComponent extends Component {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    handleOnFailure = message => {
+        this.setState({infoMessage: message});
+    };
+
+    handleOnSuccess = () => {
+        const {currFolder} = this.state;
+        this.handleGetFolder(currFolder.name);
     };
 
     handleGoBack = () => {
@@ -216,7 +264,7 @@ class FileManagerComponent extends Component {
     render() {
         const {classes} = this.props;
         const {currFolder} = this.state;
-        const {errorMessage} = this.state;
+        const {infoMessage} = this.state;
         const {isDataLoad} = this.state;
 
         return (
@@ -250,11 +298,14 @@ class FileManagerComponent extends Component {
                                 )}
                             </Grid>
 
-                            <FileManagerOptions onFolderCreate={this.createFolder}/>
+                            <FileManagerOptions currentFolder={currFolder.name}
+                                                onFolderCreate={this.createFolder}
+                                                onFailure={this.handleOnFailure}
+                                                onSuccess={this.handleOnSuccess}/>
 
 
-                            {errorMessage !== '' ? (
-                                <InfoSnackBar timeOut={2000} message={errorMessage}/>
+                            {infoMessage !== '' ? (
+                                <InfoSnackBar timeOut={2000} message={infoMessage}/>
                             ) : null}
 
                         </Grid>
