@@ -3,7 +3,6 @@ import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import axios from 'axios';
 
 import MainComponent from "./main/components/MainComponent";
-import PageComponent from "./main/components/page/PageComponent";
 import LoginComponent from "./admin/components/security/LoginComponent";
 import LogoutComponent from "./admin/components/security/LogoutComponent";
 import AdminSiteRouter from "./admin/routing/AdminSiteRouter";
@@ -65,12 +64,6 @@ class App extends Component {
                                    render={() => (
                                        isAuthenticated ? (<Redirect to={"/admin/dashboard"}/>)
                                            : (<LoginComponent/>)
-                                   )}/>
-                            <Route exact path="/admin/login/redirect"
-                                   render={props => (
-                                       props.location.state.isAuth
-                                           ? <Redirect to={"/admin/dashboard"}/>
-                                           : <Redirect to={"/admin/login"} />
                                    )}/>
 
                             <Route exact path="/admin/logout"

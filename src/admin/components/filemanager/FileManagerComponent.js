@@ -30,7 +30,10 @@ class FileManagerBar extends Component {
         return (
             <Grid item xs={8} className={classes.managerPath}>
                 <Grid item style={{marginBottom: '25px'}}>
-                    <Typography variant="title">
+                    <Typography variant="title"
+                                title={currentPath}
+                                className={classes.titleOverflow}
+                    >
                         {currentPath}
                     </Typography>
                 </Grid>
@@ -223,7 +226,7 @@ class FileManagerComponent extends Component {
                         <Grid container>
 
                             <FileManagerBar onMoveBack={this.handleGoBack}
-                                            currentPath={currFolder.name
+                                            currentPath={currFolder.path
                                             }/>
 
                             <Grid item xs={8}

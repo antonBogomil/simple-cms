@@ -2,13 +2,14 @@
 const style = theme => ({
 
     viewContainer: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
         padding: '20px',
         margin: '10px',
         wordBreak: 'break-word',
+        height: '150px',
 
         '&:hover': {
             cursor: 'pointer',
@@ -30,7 +31,10 @@ const style = theme => ({
     },
 
     fileLabel: {
-        marginTop: '10px'
+        marginTop: '10px',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     }
 
 });

@@ -48,15 +48,22 @@ class FileViewComponent extends Component {
                   onClick={file.directory ? this.openFolder : this.downloadFile}
                   onMouseEnter={() => this.setState({isHover: true})}
                   onMouseLeave={() => this.setState({isHover: false})}
+                  title={file.name}
 
             >
+                <Grid item xs={12}>
                 {ext === undefined
                     ? <FolderIcon color="primary" className={classes.iconStyle}/>
                     : isHover
                         ? <SaveIcon color="primary" className={classes.saveIcon}/>
                         : <FileIcon size={45} extension={ext} {...defaultStyles[ext]}/>
                 }
-                <Typography className={classes.fileLabel} variant="caption">{file.name}</Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Typography className={classes.fileLabel} variant="caption">{file.name}</Typography>
+
+                </Grid>
 
             </Grid>
 

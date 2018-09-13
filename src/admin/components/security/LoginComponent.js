@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import {withRouter} from 'react-router-dom';
+import {withRouter, Redirect} from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -27,7 +27,6 @@ class LoginComponent extends Component {
             username: '',
             password: '',
             showPassword: false,
-            isAuthenticate: false,
         }
     }
 
@@ -39,8 +38,7 @@ class LoginComponent extends Component {
         event.preventDefault();
     };
 
-    handleLogin = event => {
-        event.preventDefault();
+    handleLogin = () => {
 
         const {username} = this.state;
         const {password} = this.state;
@@ -54,17 +52,14 @@ class LoginComponent extends Component {
                 const code = response.data.code;
 
                 if (code === 200) {
-                    this.props.history.push({
-                        pathname: '/admin/login/redirect',
-                        state: {
-                            isAuth: true,
-                        }
-                    });
+                    //TODO: get best resolving of problem with redirecting after sucessfully authentication
+                    window.location.reload();
                 }
             }).catch(exception => {
             console.log(exception);
-        })
+        });
 
+        this.forceUpdate();
     };
 
 
@@ -77,7 +72,6 @@ class LoginComponent extends Component {
         return (
             <div className={classes.wrapper}>
                 <Paper className={classes.loginPaper}>
-                    <form onSubmit={this.handleLogin}>
                         <Grid container className={classes.formContainer}>
                             <Grid item xs={12} className={classes.windowTitle}>
                                 <Typography variant="title">
@@ -90,8 +84,9 @@ class LoginComponent extends Component {
                                 <FormControl className={classes.fullWidth}>
                                     <TextField
                                         required
-                                        placeholder="Enter the username"
+                                        autoFocus
                                         fullWidth
+                                        placeholder="Enter the username"
                                         value={username}
                                         onChange={(event) => this.setState({username: event.target.value})}
                                     />
@@ -101,8 +96,8 @@ class LoginComponent extends Component {
                                 <FormControl className={classes.fullWidth}>
                                     <Input
                                         required
-                                        placeholder="Enter the password"
                                         fullWidth
+                                        placeholder="Enter the password"
                                         type={showPassword ? 'text' : 'password'}
                                         value={password}
                                         onChange={(event) => this.setState({password: event.target.value})}
@@ -124,13 +119,11 @@ class LoginComponent extends Component {
                         <Grid item xs={12} className={classes.confirmBtn}>
                             <Button variant="contained"
                                     color="primary"
-                                    type="submit"
+                                    onClick={this.handleLogin}
                             >
                                 Log in
                             </Button>
                         </Grid>
-                    </form>
-
                 </Paper>
             </div>
         );

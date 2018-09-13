@@ -1,6 +1,12 @@
 const styles = theme => ({
         managerPath: {
-            margin: '40px 20px 0px 20px'
+            margin: '40px 20px 0px 20px',
+        },
+
+        titleOverflow: {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
         },
 
         folderContainer: {
@@ -9,7 +15,9 @@ const styles = theme => ({
             justifyContent: 'flex-start',
             flexFlow: 'row wrap',
             borderRight: '1px solid rgba(0, 0, 0, 0.12)',
-            marginBottom: '40px'
+            marginBottom: '40px',
+            minHeight: '500px',
+            height: '500px'
         },
 
         emptyFolderAlert: {
@@ -18,26 +26,12 @@ const styles = theme => ({
             display: 'flex'
         },
 
-        viewContainer: {
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            padding: '20px',
-            margin: '10px',
-            wordBreak: 'break-word',
-
-            '&:hover': {
-                cursor: 'pointer',
-                backgroundColor: 'rgba(63, 81, 181, 0.08)'
-            },
-        },
-
         optionsContainer: {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            paddingLeft: '20px'
+            paddingLeft: '20px',
+            marginBottom: '40px'
         },
 
         managerOption: {
