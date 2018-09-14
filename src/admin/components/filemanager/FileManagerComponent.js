@@ -50,6 +50,11 @@ class FileManagerBar extends Component {
     }
 }
 
+FileManagerBar.propType = {
+    onMoveBack: PropTypes.func.isRequired,
+    currentPath: PropTypes.string.isRequired
+};
+
 FileManagerBar = withStyles(Style)(FileManagerBar);
 
 
@@ -60,7 +65,10 @@ class FileManagerOptions extends Component {
         this.state = {
             folderName: '',
             uploadComplete: 0
-        }
+        };
+
+        this.cancelToken = axios.CancelToken;
+        this.source = this.cancelToken.source();
     }
 
     handleCreateFolder = event => {
@@ -74,7 +82,7 @@ class FileManagerOptions extends Component {
 
     };
 
-    uploadFile = files => {
+    uploadFiles = files => {
         const {currentFolder} = this.props;
 
         Array.from(files).forEach(file => {
@@ -90,7 +98,9 @@ class FileManagerOptions extends Component {
                     this.setState({
                         uploadComplete: Math.round(event.loaded * 100) / total
                     })
-                }
+                },
+
+                cancelToken: this.source.token,
             }).then(response => {
                 const code = response.data.code;
 
@@ -98,13 +108,13 @@ class FileManagerOptions extends Component {
                     const {onSuccess} = this.props;
 
                     this.setState({uploadComplete: 0});
-
                     onSuccess();
                 }
-            }).catch(exception => {
-                const msg = exception.response.data.message;
-                const {onFailure} = this.props;
 
+            }).catch(exception => {
+                const msg = exception;
+                console.log(exception.response);
+                const {onFailure} = this.props;
                 onFailure(msg);
             });
 
@@ -112,6 +122,11 @@ class FileManagerOptions extends Component {
         });
 
 
+    };
+
+    cancelUpload = () => {
+        this.source.cancel();
+        this.source = this.cancelToken.source();
     };
 
     render() {
@@ -122,8 +137,9 @@ class FileManagerOptions extends Component {
         return (
             <Grid item xs={4}
                   className={classes.optionsContainer}>
-                <Grid item xs={12} className={classes.fileOption}>
 
+                <Grid item xs={12}
+                      className={classes.fileOption}>
                     <form onSubmit={this.handleCreateFolder}>
                         <Button type="submit"
                                 variant="fab"
@@ -133,7 +149,7 @@ class FileManagerOptions extends Component {
 
                         <TextField
                             required
-                            className={classes.folderInput}
+                            className={classes.marginContainer}
                             label="Enter folder name"
                             value={folderName}
                             onChange={event => {
@@ -144,14 +160,34 @@ class FileManagerOptions extends Component {
                 </Grid>
 
                 <Grid item xs={12} className={classes.fileOption}>
-                    <UploadButton
-                        onUpload={this.uploadFile}
-                        complete={uploadComplete}/>
+                    <Grid item xs={12} className={classes.uploadContainer}>
+                        <UploadButton
+                            onUpload={this.uploadFiles}
+                            onCancel={this.cancelUpload}
+                            complete={uploadComplete}/>
+
+
+                        {uploadComplete !== 0 && uploadComplete === 100 ? (
+                            <Typography variant="body1"
+                                        color="textPrimary"
+                                        className={classes.marginContainer}>
+                                Waiting a few minutes for saving file on server
+                            </Typography>
+                        ) : null}
+
+                    </Grid>
                 </Grid>
             </Grid>
         );
     }
 }
+
+FileManagerOptions.propType = {
+    onFailure: PropTypes.func.isRequired,
+    onSuccess: PropTypes.func.isRequired,
+    onFolderCreate: PropTypes.func.isRequired,
+    currentFolder: PropTypes.string.isRequired,
+};
 
 FileManagerOptions = withStyles(Style)(FileManagerOptions);
 
@@ -196,10 +232,6 @@ class FileManagerComponent extends Component {
             })
 
     };
-
-    componentDidMount() {
-        this.handleGetFolder();
-    }
 
     openFolder = fileName => {
         this.handleGetFolder(fileName);
@@ -260,6 +292,9 @@ class FileManagerComponent extends Component {
         this.setState({pathHistory: pathHistory});
     };
 
+    componentDidMount() {
+        this.handleGetFolder();
+    }
 
     render() {
         const {classes} = this.props;

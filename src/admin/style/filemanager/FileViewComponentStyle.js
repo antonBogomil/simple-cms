@@ -6,10 +6,10 @@ const style = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
+        margin: '10px 10px 5px 10px',
         padding: '20px',
-        margin: '10px',
         wordBreak: 'break-word',
-        height: '150px',
+        height: '160px',
         minWidth: '100px',
 
         '&:hover': {
@@ -32,7 +32,6 @@ const style = theme => ({
     },
 
     fileLabel: {
-        marginTop: '10px',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis'

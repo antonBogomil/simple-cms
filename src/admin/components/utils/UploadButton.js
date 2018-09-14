@@ -7,6 +7,7 @@ import green from '@material-ui/core/colors/green';
 import Button from '@material-ui/core/Button';
 import CloudDone from '@material-ui/icons/CloudDone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import IconClose from '@material-ui/icons/Close';
 
 const styles = theme => ({
     root: {
@@ -42,6 +43,10 @@ class UploadButton extends Component {
         this.fileChooserRef = React.createRef();
     }
 
+    handleCancelUpload = () => {
+        const {onCancel} = this.props;
+        onCancel();
+    };
 
     handleButtonClick = (event) => {
         const {onUpload} = this.props;
@@ -52,13 +57,17 @@ class UploadButton extends Component {
         this.fileChooserRef.current.click();
     };
 
+
     render() {
 
         const {complete} = this.props;
         const {classes} = this.props;
 
+        const isLoading = complete > 0;
+        const success = complete === 100;
+
         const buttonClassName = classNames({
-            [classes.buttonSuccess]: complete === 100,
+            [classes.buttonSuccess]: success,
         });
 
         return (
@@ -78,17 +87,28 @@ class UploadButton extends Component {
                         variant="fab"
                         color="primary"
                         className={buttonClassName}
-                        onClick={this.openFileChooser}
-                        title="Upload file to server"
+                        onClick={isLoading ? this.handleCancelUpload : this.openFileChooser}
+                        title={isLoading ? Math.round(complete,2) + " %" : "Upload file to server"}
+                        style={{zIndex: '2'}}
+                        disabled={success}
                     >
-                        {complete === 100  ? <CloudDone/> : <CloudUploadIcon/>}
+                        {success
+                            ? <CloudDone/>
+                            : isLoading
+                                ? <IconClose/>
+                                : <CloudUploadIcon/>
+                        }
+
                     </Button>
 
-                    {complete > 0 && <CircularProgress size={68}
-                                                  variant="static"
-                                                  value={complete}
-                                                  className={classes.fabProgress}/>
+                    {isLoading && <CircularProgress size={68}
+                                                    variant="static"
+                                                    value={complete}
+                                                    style={success ? {color: 'rgba(0, 0, 0, 0.12)'} : null}
+                                                    className={classes.fabProgress}/>
                     }
+
+
                 </div>
             </div>
         );
@@ -97,6 +117,10 @@ class UploadButton extends Component {
 
 UploadButton.propTypes = {
     classes: PropTypes.object.isRequired,
+    complete: PropTypes.number.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onUpload: PropTypes.func.isRequired
+
 };
 
 export default withStyles(styles)(UploadButton);

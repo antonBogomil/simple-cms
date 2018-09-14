@@ -1,5 +1,3 @@
-import green from '@material-ui/core/colors/green';
-
 const styles = theme => ({
         managerPath: {
             margin: '40px 20px 0px 20px',
@@ -43,14 +41,19 @@ const styles = theme => ({
             width: '56px',
             backgroundColor: '#3f51b5',
 
-            "& :hover":{
+            "& :hover": {
                 backgroundColor: '#303f9f'
             }
         },
 
-        folderInput: {
+        marginContainer: {
             marginLeft: '25px',
         },
+        uploadContainer: {
+            display: 'flex',
+            alignItems: 'center'
+        }
+
 
     })
 ;
