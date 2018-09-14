@@ -70,7 +70,8 @@ class AddArticleComponent extends Component {
             joditConfig: {
                 height: '350'
             },
-            responseMessage: ''
+            responseMessage: '',
+            openInfoDialog: false
         };
     }
 
@@ -97,23 +98,27 @@ class AddArticleComponent extends Component {
         event.preventDefault();
 
         const {title, body, page} = this.state;
+
         const article = new FormData();
         article.set('title', title);
         article.set('body', body);
         article.set('page', page);
 
-
         axios.post('/api/article/save', article)
             .then(response => {
                 this.setState({
                     responseMessage: response.data.message,
+                    openInfoDialog: true,
                     title: '',
                     body: ''
                 })
             })
             .catch(exception => {
                 const errorMgs = exception.response.data.message;
-                this.setState({responseMessage: errorMgs});
+                this.setState({
+                    responseMessage: errorMgs,
+                    openInfoDialog: true
+                });
             });
     };
 
@@ -127,7 +132,10 @@ class AddArticleComponent extends Component {
             })
             .catch(exception => {
                 const errorMgs = exception.response.data.message;
-                this.setState({responseMessage: errorMgs});
+                this.setState({
+                    responseMessage: errorMgs,
+                    openInfoDialog: true
+                });
             })
     }
 
@@ -140,6 +148,7 @@ class AddArticleComponent extends Component {
         const {isDataLoad} = this.state;
         const {joditConfig} = this.state;
         const {responseMessage} = this.state;
+        const {openInfoDialog} = this.state;
 
         return (
             <div>
@@ -213,7 +222,10 @@ class AddArticleComponent extends Component {
 
 
                     {responseMessage !== '' ? (
-                        <InfoSnackBar timeOut={2000} message={responseMessage}/>
+                        <InfoSnackBar open={openInfoDialog}
+                                      onClose={()=> this.setState({openInfoDialog: false})}
+                                      timeOut={2000}
+                                      message={responseMessage}/>
                     ) : ''
                     }
 

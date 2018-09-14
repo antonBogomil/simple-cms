@@ -29,7 +29,8 @@ class EditArticleComponent extends Component {
             joditConfig: {
                 height: '350'
             },
-            responseMessage: ''
+            responseMessage: '',
+            openInfoDialog: false
         };
     }
 
@@ -78,16 +79,22 @@ class EditArticleComponent extends Component {
         data.set('body', article.body);
         data.set('orderNumber', article.orderNumber);
 
-        console.log("article.page: " + JSON.stringify(article.page));
 
         data.set('page', article.page.id);
 
         axios.post('/api/article/update/' + article.id, data)
             .then(reponse => {
-                this.setState({responseMessage: reponse.data.message});
+                this.setState({
+                    responseMessage: reponse.data.message,
+                    openInfoDialog: true
+                });
+
             }).catch(exception => {
             const errorMgs = exception.response.data.message;
-            this.setState({responseMessage: errorMgs});
+            this.setState({
+                responseMessage: errorMgs,
+                openInfoDialog: true
+            });
         });
     };
 
@@ -118,7 +125,10 @@ class EditArticleComponent extends Component {
 
         const {isDataLoad} = this.state;
         const {joditConfig} = this.state;
+
         const {responseMessage} = this.state;
+        const {openInfoDialog} = this.state;
+
         const {article} = this.state;
         const {pages} = this.state;
 
@@ -226,10 +236,13 @@ class EditArticleComponent extends Component {
 
                 ) : null}
 
-                {responseMessage !== '' ? (
-                    <InfoSnackBar timeOut={2000} message={responseMessage}/>
-                ) : ''
-                }
+
+                    <InfoSnackBar open={openInfoDialog}
+                                  onClose={()=> this.setState({openInfoDialog: false})}
+                        timeOut={2000}
+                        message={responseMessage}/>
+
+
 
 
             </ContentComponent>

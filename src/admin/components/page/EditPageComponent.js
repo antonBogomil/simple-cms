@@ -25,7 +25,8 @@ class EditPageComponent extends Component {
         this.state = {
             isDataLoad: false,
             page: {},
-            responseMessage: ''
+            responseMessage: '',
+            openInfoDialog: false
         };
     }
 
@@ -47,10 +48,14 @@ class EditPageComponent extends Component {
             .then(response => {
                 this.setState({
                     responseMessage: response.data.message,
+                    openInfoDialog: true
                 });
             }).catch(exception => {
             const errorMgs = exception.response.data.message;
-            this.setState({responseMessage: errorMgs});
+            this.setState({
+                responseMessage: errorMgs,
+                openInfoDialog: true
+            });
         })
 
     };
@@ -91,13 +96,16 @@ class EditPageComponent extends Component {
             })
             .catch(exception => {
                 const errorMgs = exception.response.data.message;
-                this.setState({responseMessage: errorMgs});
+                this.setState({
+                    responseMessage: errorMgs,
+                    openInfoDialog: true
+                });
             })
     }
 
     render() {
         const {classes} = this.props;
-        const {responseMessage} = this.state;
+        const {responseMessage, openInfoDialog} = this.state;
         const {page} = this.state;
         const {isDataLoad} = this.state;
 
@@ -237,10 +245,12 @@ class EditPageComponent extends Component {
 
                     ) : null}
 
-                    {responseMessage !== '' ? (
-                        <InfoSnackBar timeOut={2000} message={responseMessage}/>
-                    ) : ''
-                    }
+
+                    <InfoSnackBar open={openInfoDialog}
+                                  onClose={() => this.setState({openInfoDialog: false})}
+                                  timeOut={2000}
+                                  message={responseMessage}/>
+
 
                 </ContentComponent>
             </div>

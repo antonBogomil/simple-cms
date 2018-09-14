@@ -26,6 +26,7 @@ class AddPageComponent extends Component {
             metaKeywords: '',
             metaDescription: '',
             responseMessage: '',
+            openInfoDialog: false,
             isMainPage: false,
         };
     }
@@ -46,14 +47,18 @@ class AddPageComponent extends Component {
             .then(response => {
                 this.setState({
                     responseMessage: response.data.message,
+                    openInfoDialog: true,
                     title: '',
                     url: '',
                     metaKeywords: '',
                     metaDescription: ''
                 });
             }).catch(exception => {
-                const errorMgs = exception.response.data.message;
-                this.setState({responseMessage: errorMgs});
+            const errorMgs = exception.response.data.message;
+            this.setState({
+                responseMessage: errorMgs,
+                openInfoDialog: true
+            });
         })
 
     };
@@ -75,7 +80,7 @@ class AddPageComponent extends Component {
 
     render() {
         const {classes} = this.props;
-        const {responseMessage} = this.state;
+        const {responseMessage, openInfoDialog} = this.state;
         const {title, url, metaDescription, metaKeywords, isMainPage} = this.state;
 
         const urlPlaceholder = "Enter the url of website page (" + window.location.origin + "/)";
@@ -176,10 +181,12 @@ class AddPageComponent extends Component {
                         </form>
                     </div>
 
-                    {responseMessage !== '' ? (
-                        <InfoSnackBar timeOut={2000} message={responseMessage}/>
-                    ) : ''
-                    }
+
+                    <InfoSnackBar open={openInfoDialog}
+                                  onClose={() => this.setState({openInfoDialog: false})}
+                                  timeOut={2000}
+                                  message={responseMessage}/>
+
 
                 </ContentComponent>
             </div>

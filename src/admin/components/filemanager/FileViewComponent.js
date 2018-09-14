@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import FolderIcon from '@material-ui/icons/Folder';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
-
-
 import Grid from "@material-ui/core/Grid";
 import FileIcon, {defaultStyles} from 'react-file-icon';
 import SaveIcon from '@material-ui/icons/CloudDownload';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import FolderIcon from '@material-ui/icons/Folder';
 
+import ConfirmDialog from "./utils/ConfirmDialog";
 
 import Style from '../../style/filemanager/FileViewComponentStyle';
 
@@ -20,6 +19,7 @@ class FileViewComponent extends Component {
 
         this.state = {
             isHover: false,
+            openAlertDialog: false,
         }
     }
 
@@ -35,15 +35,25 @@ class FileViewComponent extends Component {
         onDownload(file);
     };
 
+    handleDeleteFile = () => {
+        this.setState({openAlertDialog: false});
+
+        const {file} = this.props;
+        const {onDelete} = this.props;
+        onDelete(file);
+
+
+    };
+
     render() {
         const {classes} = this.props;
         const {file} = this.props;
 
         const {isHover} = this.state;
+        const {openAlertDialog} = this.state;
 
         //get exctension of file
         const ext = file.name.substr(file.name.lastIndexOf('.') + 1);
-
 
         return (
             <Grid container
@@ -55,15 +65,15 @@ class FileViewComponent extends Component {
             >
                 <Grid item xs={12}
                       title={file.name}
-                      onClick={file.directory ? this.openFolder : this.downloadFile}
                 >
-                    {
-                        file.directory
-                            ? (<FolderIcon
-                                color="primary"
-                                className={classes.iconStyle}/>)
-                            : isHover
+                    {file.directory
+                        ? (<FolderIcon
+                            onClick={this.openFolder}
+                            color="primary"
+                            className={classes.iconStyle}/>)
+                        : isHover
                             ? <SaveIcon color="primary"
+                                        onClick={this.downloadFile}
                                         className={classes.saveIcon}/>
 
                             : <FileIcon size={45}
@@ -80,17 +90,29 @@ class FileViewComponent extends Component {
                 </Grid>
 
 
-                {isHover && !file.directory ?
-                    (
-                        <Grid item xs={12}
-                              title={"Delete " + (file.directory ? "directory" : "file")}
-                              onClick={() => console.log("Click")}>
-                            <DeleteIcon style={{height: '20px', width: '20px'}} color="primary"/>
-                        </Grid>
-                    ) : null
-                }
-            </Grid>
+                {isHover ? (
+                    <Grid item xs={12}
+                          className={classes.fileOperations}>
 
+                        <Grid title={"Delete file"}
+                              onClick={() => this.setState({openAlertDialog: true})}>
+                            <DeleteIcon className={classes.operationButton}
+                                        color="primary"/>
+
+                            <ConfirmDialog open={openAlertDialog}
+                                           title={"Delete information"}
+                                           content={"Are you sure that you want delete file? All data will be deleted."}
+                                           onConfirm={this.handleDeleteFile}/>
+                        </Grid>
+
+                        <Grid title={"Rename file"}>
+                            <EditIcon className={classes.operationButton}
+                                      color="primary"/>
+                        </Grid>
+                    </Grid>
+
+                ) : null}
+            </Grid>
         );
     }
 

@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import {withRouter, Redirect} from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -130,5 +129,4 @@ class LoginComponent extends Component {
     }
 }
 
-LoginComponent = withStyles(Style)(LoginComponent);
-export default withRouter(LoginComponent);
+export default withStyles(Style)(LoginComponent);

@@ -7,7 +7,7 @@ const style = theme => ({
         justifyContent: 'center',
         textAlign: 'center',
         margin: '10px 10px 5px 10px',
-        padding: '20px',
+        // padding: '20px',
         wordBreak: 'break-word',
         height: '160px',
         minWidth: '100px',
@@ -22,7 +22,12 @@ const style = theme => ({
     iconStyle: {
         transform: "scale(2,2)",
         height: '45px',
-        width: '45px'
+        width: '45px',
+
+        "& :hover": {
+            color: '#303f9f'
+        }
+
     },
 
     saveIcon: {
@@ -32,10 +37,34 @@ const style = theme => ({
     },
 
     fileLabel: {
+        marginTop: '15px',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        textOverflow: 'ellipsis'
-    }
+        textOverflow: 'ellipsis',
+        fontSize: '16px'
+    },
+
+    fileOperations: {
+        display: 'flex',
+        alignSelf: 'flex-end',
+        justifyContent: 'space-around',
+        width: '100px',
+        marginTop: '10px',
+        paddingBottom: '5px',
+        position: 'absolute',
+    },
+
+    operationButton: {
+        height: '30px',
+        width: '30px',
+        borderRadius: '50%',
+
+        "& :hover": {
+            color: '#303f9f'
+        }
+
+
+    },
 
 });
 

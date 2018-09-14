@@ -5,23 +5,16 @@ import CloseIcon from '@material-ui/icons/Close';
 
 
 class InfoSnackBar extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            open: true,
-        };
-    }
-
 
     handleClose = () => {
-        this.setState({open: false});
+       const {onClose} = this.props;
+       onClose();
     };
 
     render() {
         const {message} = this.props;
         const {timeOut} = this.props;
-        const {open} = this.state;
+        const {open} = this.props;
 
 
         return (

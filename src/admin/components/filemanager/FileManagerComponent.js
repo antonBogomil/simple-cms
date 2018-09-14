@@ -200,7 +200,8 @@ class FileManagerComponent extends Component {
             isDataLoad: false,
             currFolder: {},
             pathHistory: [],
-            infoMessage: ''
+            infoMessage: '',
+            openInfoDialog: false,
         };
     }
 
@@ -228,7 +229,10 @@ class FileManagerComponent extends Component {
                 });
             })
             .catch(exception => {
-                console.log("FileManagerComponent:" + exception);
+                this.setState({
+                    infoMessage: exception.response.data.message,
+                    openInfoDialog: true
+                });
             })
 
     };
@@ -254,9 +258,12 @@ class FileManagerComponent extends Component {
             if (status === 201) {
                 this.setState({currFolder: response.data})
             }
-
         }).catch(exception => {
-            this.setState({infoMessage: exception.response.data.message});
+            this.setState({
+                infoMessage: exception.response.data.message,
+                openInfoDialog: true
+            });
+
         });
 
     };
@@ -268,6 +275,29 @@ class FileManagerComponent extends Component {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    deleteFile = file => {
+        const deleteUrl = file.directory
+            ? ('/api/folder/delete/' + file.name)
+            : file.deleteLink;
+
+        axios.delete(deleteUrl)
+            .then(response => {
+                const code = response.data.code;
+
+                if (code === 200) {
+                    const {currFolder} = this.state;
+                    this.handleGetFolder(currFolder.name);
+                    this.setState({
+                        infoMessage: response.data.message,
+                        openInfoDialog: true
+                    });
+                }
+            }).catch(exception => {
+            console.log(exception);
+        })
+
     };
 
     handleOnFailure = message => {
@@ -301,6 +331,7 @@ class FileManagerComponent extends Component {
         const {currFolder} = this.state;
         const {infoMessage} = this.state;
         const {isDataLoad} = this.state;
+        const {openInfoDialog} = this.state;
 
         return (
             <ContentComponent navigation="File-manager / root">
@@ -318,9 +349,10 @@ class FileManagerComponent extends Component {
                                     currFolder.children.map(file => {
                                         return (
                                             <FileViewComponent
-                                                key={file.createDate}
                                                 onOpenFolder={this.openFolder}
                                                 onDownload={this.downloadFile}
+                                                onDelete={this.deleteFile}
+                                                key={file.createDate}
                                                 file={file}/>
                                         )
                                     })
@@ -339,9 +371,11 @@ class FileManagerComponent extends Component {
                                                 onSuccess={this.handleOnSuccess}/>
 
 
-                            {infoMessage !== '' ? (
-                                <InfoSnackBar timeOut={2000} message={infoMessage}/>
-                            ) : null}
+
+                                <InfoSnackBar open={openInfoDialog}
+                                              onClose={()=> this.setState({openInfoDialog: false})}
+                                              timeOut={2000}
+                                              message={infoMessage}/>
 
                         </Grid>
 
