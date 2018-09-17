@@ -9,7 +9,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FolderIcon from '@material-ui/icons/Folder';
 
-import ConfirmDialog from "./utils/ConfirmDialog";
+import ConfirmDialogComponent from "./utils/ConfirmDialogComponent";
+import FormDialogComponent from "./utils/FormDialogComponent";
 
 import Style from '../../style/filemanager/FileViewComponentStyle';
 
@@ -20,6 +21,7 @@ class FileViewComponent extends Component {
         this.state = {
             isHover: false,
             openAlertDialog: false,
+            openRenameFileDialog: false,
         }
     }
 
@@ -45,16 +47,43 @@ class FileViewComponent extends Component {
 
     };
 
+    handleRenameFile = newFileName => {
+        this.setState({
+            openRenameFileDialog: false,
+            isHover: false
+        });
+
+        const {file} = this.props;
+        const {onRename} = this.props;
+
+        if (file.directory) {
+            onRename(file.name, newFileName);
+        } else {
+            const exc = file.name.substr(file.name.lastIndexOf('.') + 1);
+            onRename(file.name, newFileName + "." + exc);
+        }
+
+    };
+
+    openConfirmDialog = () => {
+        this.setState({openAlertDialog: true});
+    };
+
+    openRenameFormDialog = () => {
+        this.setState({openRenameFileDialog: true})
+    };
+
+
     render() {
         const {classes} = this.props;
         const {file} = this.props;
 
         const {isHover} = this.state;
         const {openAlertDialog} = this.state;
+        const {openRenameFileDialog} = this.state;
 
         //get exctension of file
         const ext = file.name.substr(file.name.lastIndexOf('.') + 1);
-
         return (
             <Grid container
                   item xs={1}
@@ -92,26 +121,38 @@ class FileViewComponent extends Component {
 
                 {isHover ? (
                     <Grid item xs={12}
-                          className={classes.fileOperations}>
-
+                          className={classes.fileOperations}
+                    >
                         <Grid title={"Delete file"}
-                              onClick={() => this.setState({openAlertDialog: true})}>
+                              onClick={this.openConfirmDialog}>
                             <DeleteIcon className={classes.operationButton}
                                         color="primary"/>
-
-                            <ConfirmDialog open={openAlertDialog}
-                                           title={"Delete information"}
-                                           content={"Are you sure that you want delete file? All data will be deleted."}
-                                           onConfirm={this.handleDeleteFile}/>
                         </Grid>
 
-                        <Grid title={"Rename file"}>
+                        <Grid title={"Rename file"}
+                              onClick={this.openRenameFormDialog}>
                             <EditIcon className={classes.operationButton}
                                       color="primary"/>
                         </Grid>
                     </Grid>
 
                 ) : null}
+
+                {openAlertDialog ? (
+                    <ConfirmDialogComponent open={openAlertDialog}
+                                            title={"Delete information"}
+                                            content={"Are you sure that you want delete file? All data will be deleted."}
+                                            onConfirm={this.handleDeleteFile}/>
+                ) : null}
+
+                {openRenameFileDialog ? (
+                    <FormDialogComponent open={openRenameFileDialog}
+                                         title={"Rename folder"}
+                                         content={"Enter new folder name"}
+                                         onConfirm={this.handleRenameFile}
+                    />
+                ) : null}
+
             </Grid>
         );
     }

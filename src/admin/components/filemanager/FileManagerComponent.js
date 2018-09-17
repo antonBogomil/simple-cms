@@ -54,7 +54,6 @@ FileManagerBar.propType = {
     onMoveBack: PropTypes.func.isRequired,
     currentPath: PropTypes.string.isRequired
 };
-
 FileManagerBar = withStyles(Style)(FileManagerBar);
 
 
@@ -188,7 +187,6 @@ FileManagerOptions.propType = {
     onFolderCreate: PropTypes.func.isRequired,
     currentFolder: PropTypes.string.isRequired,
 };
-
 FileManagerOptions = withStyles(Style)(FileManagerOptions);
 
 
@@ -202,6 +200,7 @@ class FileManagerComponent extends Component {
             pathHistory: [],
             infoMessage: '',
             openInfoDialog: false,
+            openConfirmDialog: false,
         };
     }
 
@@ -300,6 +299,36 @@ class FileManagerComponent extends Component {
 
     };
 
+    renameFile = (oldName, newName) => {
+
+        axios.put('/api/folder/rename', '', {
+            params: {
+                oldName: oldName,
+                newName: newName
+            }
+        }).then(response => {
+            const code = response.data.code;
+
+            if (code === 200) {
+                this.setState({
+                    infoMessage: response.data.message,
+                    openInfoDialog: true
+                });
+
+                const {currFolder} = this.state;
+                this.handleGetFolder(currFolder.name);
+            }
+
+        }).catch(exception => {
+            const message = exception.response.data.message;
+            this.setState({
+                infoMessage: message,
+                openInfoDialog: true
+            });
+
+        })
+    };
+
     handleOnFailure = message => {
         this.setState({infoMessage: message});
     };
@@ -334,14 +363,14 @@ class FileManagerComponent extends Component {
         const {openInfoDialog} = this.state;
 
         return (
-            <ContentComponent navigation="File-manager / root">
+            <ContentComponent navigation="File-manager">
                 {
                     isDataLoad ? (
                         <Grid container>
 
                             <FileManagerBar onMoveBack={this.handleGoBack}
-                                            currentPath={currFolder.path
-                                            }/>
+                                            currentPath={currFolder.path}
+                            />
 
                             <Grid item xs={8}
                                   className={classes.folderContainer}>
@@ -351,6 +380,7 @@ class FileManagerComponent extends Component {
                                             <FileViewComponent
                                                 onOpenFolder={this.openFolder}
                                                 onDownload={this.downloadFile}
+                                                onRename={this.renameFile}
                                                 onDelete={this.deleteFile}
                                                 key={file.createDate}
                                                 file={file}/>
@@ -371,11 +401,10 @@ class FileManagerComponent extends Component {
                                                 onSuccess={this.handleOnSuccess}/>
 
 
-
-                                <InfoSnackBar open={openInfoDialog}
-                                              onClose={()=> this.setState({openInfoDialog: false})}
-                                              timeOut={2000}
-                                              message={infoMessage}/>
+                            <InfoSnackBar open={openInfoDialog}
+                                          onClose={() => this.setState({openInfoDialog: false})}
+                                          timeOut={2000}
+                                          message={infoMessage}/>
 
                         </Grid>
 

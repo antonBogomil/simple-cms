@@ -44,7 +44,7 @@ class MenuData extends Component {
             <div>
                 <ListItem button onClick={this.handleClickPageMenu}>
                     <ListItemIcon>
-                        <PageIcon/>
+                        <PageIcon style={pageOpen ? {color: '#3f51b5'} : null}/>
                     </ListItemIcon>
                     <ListItemText primary="Pages"/>
                     {pageOpen ? <ExpandLess/> : <ExpandMore/>}
@@ -69,7 +69,7 @@ class MenuData extends Component {
 
                 <ListItem button onClick={this.handleClickArticleMenu}>
                     <ListItemIcon>
-                        <InboxIcon/>
+                        <InboxIcon style={articleOpen ? {color: '#3f51b5'} : null}/>
                     </ListItemIcon>
                     <ListItemText primary="Articles"/>
                     {articleOpen ? <ExpandLess/> : <ExpandMore/>}
