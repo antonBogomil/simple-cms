@@ -375,14 +375,14 @@ class FileManagerComponent extends Component {
                             <Grid item xs={8}
                                   className={classes.folderContainer}>
                                 {currFolder.children ? (
-                                    currFolder.children.map(file => {
+                                    currFolder.children.map((file, index) => {
                                         return (
                                             <FileViewComponent
                                                 onOpenFolder={this.openFolder}
                                                 onDownload={this.downloadFile}
                                                 onRename={this.renameFile}
                                                 onDelete={this.deleteFile}
-                                                key={file.createDate}
+                                                key={index}
                                                 file={file}/>
                                         )
                                     })

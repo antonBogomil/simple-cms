@@ -6,25 +6,22 @@ import '../../style/page/PageViewComponentStyle.css';
 
 class PageViewComponent extends Component {
 
-    componentWillMount() {
-        const {page} = this.props;
-        document.title = page.title;
-        document.getElementsByTagName("meta")[3].content = page.metaDescription;
-        document.getElementsByTagName("meta")[4].content = page.metaKeywords;
-
-    }
 
     render() {
         const {page} = this.props;
         return (
             <div>
-                <Helmet> </Helmet>
+                <Helmet>
+                    <title>{page.title}</title>
+                    <meta name="description" content={page.metaDescription}/>
+                    <meta name="keywords" content={page.metaKeywords}/>
+                </Helmet>
 
-                { page.articles ?
+                {page.articles ? (
                     page.articles.map(article => {
                         return (<div key={article.id} dangerouslySetInnerHTML={{__html: article.body}}/>)
                     })
-                    : null}
+                ) : null}
             </div>
 
         )

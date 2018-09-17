@@ -172,10 +172,6 @@ class ArticleListComponent extends Component {
             .then(response => {
                 let articles = response.data;
 
-                articles.sort((a, b) => {
-                    return a.orderNumber > b.orderNumber
-                });
-
                 this.setState({
                     articles: articles
                 });

@@ -42,6 +42,7 @@ class PageComponent extends Component {
     render() {
         const {page} = this.state;
         const {isPageLoaded} = this.state;
+
         return (
             <div>
                 {isPageLoaded ? (

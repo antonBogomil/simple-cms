@@ -49,9 +49,6 @@ class App extends Component {
                 {isDataLoaded ? (
                     <BrowserRouter>
                         <Switch>
-                            {/*Main page router */}
-                            <Route exact path="/" component={MainComponent}/>
-
                             {/* Admin routings */}
                             <Route exact path="/admin"
                                    render={() => (isAuthenticated ? (
@@ -72,6 +69,10 @@ class App extends Component {
                             <PrivateRoute path="/admin"
                                           isAuth={isAuthenticated}
                                           component={AdminSiteRouter}/>
+
+                            {/*Main page router */}
+                            <Route  path="/" component={MainComponent}/>
+
                         </Switch>
                     </BrowserRouter>
                 ) : null}

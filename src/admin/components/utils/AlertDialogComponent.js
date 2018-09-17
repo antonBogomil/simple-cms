@@ -21,7 +21,7 @@ class AlertDialogComponent extends Component {
                 <Dialog
                     open={true}
                     aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"FileManagerComponent
+                    aria-describedby="alert-dialog-description"
                 >
                     <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
                     <DialogContent>
