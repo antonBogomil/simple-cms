@@ -146,7 +146,7 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: [paths.appSrc, 'node_modules/@material'],
+            include: [paths.appSrc, 'node_modules/@material-ui'],
             loader: require.resolve('babel-loader'),
             options: {
               
