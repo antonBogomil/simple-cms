@@ -8,6 +8,7 @@ import PageListComponent from "../page/component/PageListComponent";
 import AddPageComponent from "../page/component/AddPageComponent";
 import EditPageComponent from "../page/component/EditPageComponent";
 import FileManagerComponent from "../file/component/FileManagerComponent";
+import PageListContainer from "../page/container/PageListContainer";
 
 
 class AdminSiteRouter extends Component {
@@ -22,7 +23,7 @@ class AdminSiteRouter extends Component {
                     <Route exact path="/admin/article/edit/:id"
                            component={EditArticleComponent}/>
                     <Route exact path="/admin/page"
-                           component={PageListComponent}/>
+                           component={PageListContainer}/>
                     <Route exact path="/admin/page/add"
                            component={AddPageComponent}/>
                     <Route exact path="/admin/page/edit/:id"

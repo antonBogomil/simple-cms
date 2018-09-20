@@ -23,10 +23,46 @@ import Button from '@material-ui/core/Button';
 
 import classNames from 'classnames';
 
-import axios from 'axios';
 
 import Style from '../style/PageListComponentStyle';
 import InfoSnackBar from "../../utils/InfoSnackBar";
+
+
+class PageArticlesExpansionPanelComponent extends Component {
+
+    render() {
+        const {articles} = this.props;
+
+        return (
+            <div style={{width: '100%'}}>
+                {articles.length === 0 ? "No articles yet" : (
+                    <Select>
+                        <MenuItem value="" disabled>
+                            Choose an article
+                        </MenuItem>
+                        {articles.map(article => {
+                            return (<MenuItem
+                                value={article.id}
+                                key={article.id}
+                                component={Link}
+                                to={{
+                                    pathname: "/admin/article/edit/" + article.id,
+                                    state: {
+                                        articlesOrder: articles.map(a => a.orderNumber)
+                                    }
+                                }}
+                            >
+                                {article.title}
+                            </MenuItem>)
+                        })}
+                    </Select>
+                )}
+
+            </div>
+        )
+    };
+}
+
 
 class PageTableToolbar extends Component {
 
@@ -69,43 +105,98 @@ class PageTableToolbar extends Component {
         )
     };
 }
-
 PageTableToolbar = withStyles(Style)(PageTableToolbar);
 
-class PageArticlesExpansionPanelComponent extends Component {
+
+class PageTableHead extends Component {
+
+    handleChooseAll = () => {
+        this.props.onChooseAll();
+    };
 
     render() {
-        const {articles} = this.props;
+        const {isSelectAll} = this.props;
 
         return (
-            <div style={{width: '100%'}}>
-                {articles.length === 0 ? "No articles yet" : (
-                    <Select>
-                        <MenuItem value="" disabled>
-                            Choose an article
-                        </MenuItem>
-                        {articles.map(article => {
-                            return (<MenuItem
-                                value={article.id}
-                                key={article.id}
-                                component={Link}
-                                to={{
-                                    pathname: "/admin/article/edit/" + article.id,
-                                    state: {
-                                        articlesOrder: articles.map(a => a.orderNumber)
-                                    }
-                                }}
-                            >
-                                {article.title}
-                            </MenuItem>)
-                        })}
-                    </Select>
-                )}
-
-            </div>
-        )
-    };
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            checked={isSelectAll}
+                            onChange={this.handleChooseAll}
+                        />
+                    </TableCell>
+                    <TableCell>Id</TableCell>
+                    <TableCell>Title</TableCell>
+                    <TableCell>Meta Description</TableCell>
+                    <TableCell>Meta Keywords</TableCell>
+                    <TableCell>Url link</TableCell>
+                    <TableCell>Is main page</TableCell>
+                    <TableCell>Articles</TableCell>
+                    <TableCell>Create Date</TableCell>
+                    <TableCell>Edit</TableCell>
+                </TableRow>
+            </TableHead>
+        );
+    }
 }
+
+
+class PageTableItem extends Component {
+    render() {
+        const urlHostName = window.location.origin;
+
+        const {page} = this.props;
+        const {isSelected} = this.props;
+        const {onSelectPage} = this.props;
+
+
+        return (
+            <TableRow key={page.id}>
+                <TableCell padding="checkbox">
+                    <Checkbox
+                        checked={isSelected}
+                        onChange={(event) => onSelectPage(event, page.id)}
+                    />
+                </TableCell>
+                <TableCell>{page.id}</TableCell>
+                <TableCell>{page.title}</TableCell>
+                <TableCell>{page.metaDescription}</TableCell>
+                <TableCell>{page.metaKeywords}</TableCell>
+                <TableCell>
+                    {(!page.isMainPage && page.url === '') ? (
+                        <Typography variant="caption" color="error">
+                            {urlHostName}/{page.url}
+                            <Typography variant="caption" color="error">
+                                Only main page can have empty url!
+                                Please edit this page and change url.
+                            </Typography>
+                        </Typography>
+                    ) : (
+                        <Typography variant="caption">
+                            {urlHostName}/{page.url}
+                        </Typography>
+                    )}
+
+                </TableCell>
+                <TableCell>{page.isMainPage ? "Yes" : "No"}</TableCell>
+                <TableCell>
+                    <PageArticlesExpansionPanelComponent articles={page.articles}/>
+                </TableCell>
+                <TableCell>{page.createDate}</TableCell>
+                <TableCell>
+                    <IconButton component={Link} to={{
+                        pathname: "/admin/page/edit/" + page.id,
+                    }}>
+                        <EditIcon/>
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+        )
+    }
+}
+
+
 
 class PageListComponent extends Component {
     constructor(props) {
@@ -121,18 +212,9 @@ class PageListComponent extends Component {
 
     }
 
-    componentDidMount() {
-        axios.get('/api/page/list')
-            .then(response => {
-                const pages = response.data;
-                this.setState({pages: pages});
-            });
-    }
-
-
     handleToggleAll = () => {
         const {isSelectAll} = this.state;
-        const {pages} = this.state;
+        const {pages} = this.props;
 
         if (!isSelectAll) {
             this.setState({
@@ -151,7 +233,8 @@ class PageListComponent extends Component {
     };
 
     handleSelectPage = (event, id) => {
-        const {pages} = this.state;
+        const {pages} = this.props;
+
         const {selected} = this.state;
         const {isSelectAll} = this.state;
 
@@ -185,22 +268,8 @@ class PageListComponent extends Component {
 
     handleDeletePages = () => {
         const {selected} = this.state;
-        const {pages} = this.state;
-
-        selected.forEach(pageId => {
-            axios.delete('/api/page/delete/' + pageId)
-                .then(response => {
-                    const code = response.data.code;
-                    if (code === 200) {
-                        const page = pages.filter(p => p.id === pageId);
-                        pages.splice(pages.indexOf(page), 1);
-                        this.setState({pages: pages});
-                    }
-                }).catch(exception => {
-                console.log(exception);
-            })
-
-        });
+        const {onDeletePages} = this.props;
+        onDeletePages(selected);
 
         this.setState({
             numSelected: 0,
@@ -216,13 +285,11 @@ class PageListComponent extends Component {
 
     render() {
         const {classes} = this.props;
+        const {pages} = this.props;
 
-        const {pages} = this.state;
         const {isSelectAll} = this.state;
         const {numSelected} = this.state;
         const {responseMessage} = this.state;
-
-        const urlHostName = window.location.origin;
 
         return (
             <div>
@@ -232,76 +299,26 @@ class PageListComponent extends Component {
                             select={numSelected}
                             onDelete={this.handleDeletePages}
                         />
+
                         <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            checked={isSelectAll}
-                                            onChange={this.handleToggleAll}
-                                        />
-                                    </TableCell>
-                                    <TableCell>Id</TableCell>
-                                    <TableCell>Title</TableCell>
-                                    <TableCell>Meta Description</TableCell>
-                                    <TableCell>Meta Keywords</TableCell>
-                                    <TableCell>Url link</TableCell>
-                                    <TableCell>Is main page</TableCell>
-                                    <TableCell>Articles</TableCell>
-                                    <TableCell>Create Date</TableCell>
-                                    <TableCell>Edit</TableCell>
-                                </TableRow>
-                            </TableHead>
+                            <PageTableHead isSelectAll={isSelectAll}
+                                           onChooseAll={this.handleToggleAll}/>
+
                             <TableBody>
                                 {pages.map(row => {
                                     const isSelected = this.isPageSelected(row.id);
                                     return (
-                                        <TableRow key={row.id}>
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isSelected}
-                                                    onChange={(event) => this.handleSelectPage(event, row.id)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>{row.id}</TableCell>
-                                            <TableCell>{row.title}</TableCell>
-                                            <TableCell>{row.metaDescription}</TableCell>
-                                            <TableCell>{row.metaKeywords}</TableCell>
-                                            <TableCell>
-                                                {(!row.isMainPage && row.url === '') ? (
-                                                    <Typography variant="caption" color="error">
-                                                        {urlHostName}/{row.url}
-                                                        <Typography variant="caption" color="error">
-                                                            Only main page can have empty url!
-                                                            Please edit this page and change url.
-                                                        </Typography>
-                                                    </Typography>
-                                                ) : (
-                                                    <Typography variant="caption">
-                                                        {urlHostName}/{row.url}
-                                                    </Typography>
-                                                )}
-
-                                            </TableCell>
-                                            <TableCell>{row.isMainPage ? "Yes" : "No"}</TableCell>
-                                            <TableCell>
-                                                <PageArticlesExpansionPanelComponent articles={row.articles}/>
-                                            </TableCell>
-                                            <TableCell>{row.createDate}</TableCell>
-                                            <TableCell>
-                                                <IconButton component={Link} to={{
-                                                    pathname: "/admin/page/edit/" + row.id,
-                                                }}>
-                                                    <EditIcon/>
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
+                                        <PageTableItem key={row.id}
+                                                       page={row}
+                                                       onSelectPage={this.handleSelectPage}
+                                                       isSelected={isSelected}/>
                                     );
                                 })}
                             </TableBody>
                         </Table>
                     </div>
                 </ContentComponent>
+
                 <div className={classes.createArticleTooltip}>
                     <Tooltip title="Create new page">
                         <Button color="secondary"
