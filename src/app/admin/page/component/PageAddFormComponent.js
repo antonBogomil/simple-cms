@@ -13,7 +13,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 
 import Style from '../style/AddPageComponentStyle';
-import InfoWindow from "../../utils/InfoWindow";
 
 
 class PageAddFormComponent extends Component {
@@ -164,7 +163,7 @@ class PageAddFormComponent extends Component {
                                         className={classes.button}
                                         onClick={this.handleClearForm}
                                 >
-                                    Cancel
+                                    Clear
                                 </Button>
                             </div>
                         </form>
@@ -177,7 +176,6 @@ class PageAddFormComponent extends Component {
 
 PageAddFormComponent.propType = {
     classes: PropType.object.isRequired,
-    navigation: PropType.string.isRequired
 };
 
 export default withStyles(Style)(PageAddFormComponent);

@@ -1,4 +1,4 @@
-import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, EDIT_PAGE, GET_PAGE} from "../actions/type";
+import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, UPDATE_PAGE, GET_PAGE} from "../action/types";
 
 const initialState = {
     pages: [],
@@ -37,7 +37,7 @@ export default function (state = initialState, action) {
 
         }
 
-        case EDIT_PAGE: {
+        case UPDATE_PAGE: {
             const page = action.payload;
             const pages = state.pages;
 

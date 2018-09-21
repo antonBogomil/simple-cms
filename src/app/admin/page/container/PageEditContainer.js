@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from 'react-redux';
 
-import {editPage, getPage} from '../actions/pageActions';
+import {editPage, getPage} from '../action/pageActions';
 import PageEditFormComponent from "../component/PageEditFormComponent";
 
 class PageEditContainer extends Component {

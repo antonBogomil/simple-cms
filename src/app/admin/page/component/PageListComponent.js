@@ -27,7 +27,6 @@ import classNames from 'classnames';
 import Style from '../style/PageListComponentStyle';
 
 
-
 class PageTableToolbar extends Component {
 
     handleDeletePage = () => {
@@ -36,15 +35,15 @@ class PageTableToolbar extends Component {
     };
 
     render() {
-        const {isSelect} = this.props;
+        const {select} = this.props;
         const {classes} = this.props;
         const toolbarStylee = classNames(null, {
-            [classes.selectToolBar]: isSelect > 0
+            [classes.selectToolBar]: select > 0
         });
 
         return (
             <Toolbar className={toolbarStylee}>
-                {isSelect === 0 ? (
+                {select === 0 ? (
                     <Typography variant="title">
                         Pages
                     </Typography>
@@ -52,7 +51,7 @@ class PageTableToolbar extends Component {
 
                     <div className={classes.toolBarSelected}>
                         <Typography variant="title">
-                            {isSelect} selected
+                            {select} selected
                         </Typography>
                         <Tooltip title="Delete">
                             <IconButton
@@ -79,8 +78,8 @@ class PageArticlesExpansionPanelComponent extends Component {
 
         return (
             <div style={{width: '100%'}}>
-                {articles === undefined ||  articles.length === 0 ? "No articles yet" : (
-                    <Select>
+                {articles === undefined || articles.length === 0 ? "No articles yet" : (
+                    <Select value={-1}>
                         <MenuItem value="" disabled>
                             Choose an article
                         </MenuItem>
@@ -166,9 +165,8 @@ class PageTableItem extends Component {
         const {isSelected} = this.props;
         const {onSelectPage} = this.props;
 
-
         return (
-            <TableRow key={page.id}>
+            <TableRow>
                 <TableCell padding="checkbox">
                     <Checkbox
                         checked={isSelected}
@@ -220,7 +218,6 @@ class PageListComponent extends Component {
 
         const {isSelectAll} = this.props;
         const {numSelected} = this.props;
-        const {responseMessage} = this.props;
 
         const {onSelectPage} = this.props;
         const {onSelectAll} = this.props;
@@ -232,7 +229,7 @@ class PageListComponent extends Component {
                 <ContentComponent navigation="Pages / List">
                     <div>
                         <PageTableToolbar
-                            isSelect={numSelected}
+                            select={numSelected}
                             onDelete={onDeletePages}
                         />
 
@@ -244,6 +241,7 @@ class PageListComponent extends Component {
                                            onSelectPage={onSelectPage}
                                            isPageSelected={isPageSelected}/>
                         </Table>
+
                     </div>
                 </ContentComponent>
 
@@ -265,7 +263,6 @@ class PageListComponent extends Component {
 
 PageListComponent.propType = {
     classes: PropType.object.isRequired,
-    navagition: PropType.string.isRequired,
 
     isSelectAll: PropType.bool.isRequired,
     numSelected: PropType.number.isRequired,

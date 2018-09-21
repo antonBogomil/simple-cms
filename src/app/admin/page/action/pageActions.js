@@ -1,4 +1,4 @@
-import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, EDIT_PAGE, GET_PAGE} from "./type";
+import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, UPDATE_PAGE, GET_PAGE} from "./types";
 import axios from 'axios';
 import {openWindowDispatch} from "../../../actions/info/types";
 
@@ -13,7 +13,7 @@ export const fetchPages = () => dispatch => {
             })
         }).catch(exception => {
         const response = exception.response;
-        dispatch(openWindowDispatch(response.message));
+        dispatch(openWindowDispatch(response.data.message));
     });
 
 };
@@ -31,7 +31,7 @@ export const createPage = page => dispatch => {
 
         }).catch(exception => {
         const response = exception.response;
-        dispatch(openWindowDispatch(response.message));
+        dispatch(openWindowDispatch(response.data.message));
     });
 
 
@@ -42,7 +42,7 @@ export const deletePage = pageIds => dispatch => {
         axios.delete('/api/page/delete/' + pageId)
             .catch(exception => {
                 const response = exception.response;
-                dispatch(openWindowDispatch(response.message));
+                dispatch(openWindowDispatch(response.data.message));
             });
     });
 
@@ -61,20 +61,18 @@ export const deletePage = pageIds => dispatch => {
 };
 
 export const editPage = (page, id) => dispatch => {
-    console.log(JSON.stringify(page));
-
     axios.post('/api/page/update/' + id, page)
         .then(response => response.data)
         .then(data => {
             dispatch({
-                type: EDIT_PAGE,
+                type: UPDATE_PAGE,
                 payload: data.data
             });
 
             dispatch(openWindowDispatch(data.message));
         }).catch(exception => {
         const response = exception.response;
-        dispatch(openWindowDispatch(response.message));
+        dispatch(openWindowDispatch(response.data.message));
     });
 
 };
@@ -89,7 +87,7 @@ export const getPage = id => dispatch => {
             })
         }).catch(exception => {
         const response = exception.response;
-        dispatch(openWindowDispatch(response.message));
+        dispatch(openWindowDispatch(response.data.message));
     });
 
 };

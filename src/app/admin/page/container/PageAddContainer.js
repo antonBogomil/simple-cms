@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 
 import {connect} from 'react-redux';
-import {createPage} from '../actions/pageActions'
+import {createPage} from '../action/pageActions'
 import PageAddFormComponent from "../component/PageAddFormComponent";
 import InfoWindow from "../../utils/InfoWindow";
 

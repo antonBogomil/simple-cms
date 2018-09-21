@@ -18,7 +18,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import {Link} from 'react-router-dom';
 import classNames from 'classnames';
-import axios from 'axios';
 
 
 import Style from '../style/ArticleListComponentStyle';
@@ -68,123 +67,122 @@ class ArticleTableToolbar extends Component {
 
 ArticleTableToolbar = withStyles(Style)(ArticleTableToolbar);
 
+
+class ArticleTableItem extends Component {
+    render() {
+        const {articles} = this.props;
+        const {article} = this.props;
+
+        const {isSelected} = this.props;
+
+        const {onSelect} = this.props;
+
+        return (
+            <TableRow key={article.id}>
+                <TableCell padding="checkbox">
+                    <Checkbox
+                        checked={isSelected}
+                        onChange={(event) => onSelect(event, article.id)}
+                    />
+                </TableCell>
+                <TableCell>{article.id}</TableCell>
+                <TableCell>{article.title}</TableCell>
+                <TableCell>{article.createDate}</TableCell>
+
+                <TableCell>
+                    {article.page ? (
+                        <Typography
+                            component={Link}
+                            to={'/admin/page/edit/' + article.page.id}
+                        >
+                            {article.page.title}
+                        </Typography>
+                    ) : 'No parent page yet'}
+                </TableCell>
+
+                <TableCell>{article.orderNumber}</TableCell>
+
+                <TableCell>
+                    <IconButton component={Link} to={{
+                        pathname: "/admin/article/edit/" + article.id,
+                        state: {
+                            articlesOrder: articles.map(a => a.orderNumber)
+                        }
+                    }}>
+                        <EditIcon/>
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+        );
+    }
+}
+
+class ArticleTableHead extends Component {
+
+    render() {
+        const {isSelectAll} = this.props;
+        const {onSelectAll} = this.props;
+
+        return (
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                            checked={isSelectAll}
+                            onChange={onSelectAll}
+                        />
+                    </TableCell>
+                    <TableCell>Id</TableCell>
+                    <TableCell>Title</TableCell>
+                    <TableCell>Create Date</TableCell>
+                    <TableCell>Parent page</TableCell>
+                    <TableCell>Order</TableCell>
+                    <TableCell>Edit</TableCell>
+                </TableRow>
+            </TableHead>
+        );
+    }
+}
+
+class ArticleTableBody extends Component {
+    render() {
+
+        const {articles} = this.props;
+        const {isArticleSelected} = this.props;
+
+        const {onSelect} = this.props;
+
+        return (
+            <TableBody>
+                {articles.map(row => {
+                    const isSelected = isArticleSelected(row.id);
+                    return (
+                        <ArticleTableItem key={row.id}
+                                          articles={articles}
+                                          article={row}
+                                          isSelected={isSelected}
+                                          onSelect={onSelect}/>
+                    );
+                })}
+            </TableBody>
+        );
+    }
+}
+
 class ArticleListComponent extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            articles: [],
-            selected: [],
-            isSelectAll: false,
-            numSelected: 0,
-        };
-    }
-
-    handleToggleAll = () => {
-        const {isSelectAll} = this.state;
-        const {articles} = this.state;
-
-        if (!isSelectAll) {
-            this.setState({
-                isSelectAll: true,
-                selected: articles.map(n => n.id),
-                numSelected: articles.length
-            });
-        } else {
-            this.setState({
-                isSelectAll: false,
-                selected: [],
-                numSelected: 0
-            });
-        }
-
-    };
-
-    handleSelectArticle = (event, id) => {
-        const {articles} = this.state;
-        const {selected} = this.state;
-        const {isSelectAll} = this.state;
-
-        const isArticleChecked = selected.indexOf(id) !== -1;
-
-        if (isArticleChecked) {
-            const index = selected.indexOf(id);
-            selected.splice(index, 1);
-
-            if (isSelectAll && selected.length === 0) {
-                this.setState({selected: [], isSelectAll: false});
-            } else if (isSelectAll && selected.length !== articles.length) {
-                this.setState({isSelectAll: false});
-            }
-
-            this.setState({selected: selected});
-        } else {
-            selected.push(id);
-
-            if (!isSelectAll && selected.length === articles.length) {
-                this.setState({isSelectAll: true});
-            }
-
-            this.setState({selected: selected});
-        }
-
-        this.setState({numSelected: selected.length});
-
-
-    };
-
-    isArticleSelected = id => {
-        return this.state.selected.indexOf(id) !== -1;
-    };
-
-    handleDeleteArticles = () => {
-        const {selected} = this.state;
-        const {articles} = this.state;
-
-        selected.forEach(articleId => {
-            axios.delete('/api/article/delete/' + articleId)
-                .then(response => {
-
-                    const code = response.data.code;
-
-                    if (code === 200) {
-                        const article = articles.filter(a => a.id === articleId);
-                        const index = articles.indexOf(article);
-
-                        articles.splice(index, 1);
-                        this.setState({articles: articles});
-                    }
-
-                }).catch(exception => {
-                console.log(exception);
-            })
-        });
-
-        this.setState({
-            selected: [],
-            isSelectAll: false,
-            numSelected: 0
-        });
-    };
-
-    componentDidMount() {
-        axios.get('/api/article/list')
-            .then(response => {
-                let articles = response.data;
-
-                this.setState({
-                    articles: articles
-                });
-            });
-
-    }
 
     render() {
         const {classes} = this.props;
 
-        const {articles} = this.state;
-        const {isSelectAll} = this.state;
-        const {numSelected} = this.state;
+        const {articles} = this.props;
+        const {isSelectAll} = this.props;
+        const {numSelected} = this.props;
+
+        const {onSelectAll} = this.props;
+        const {onSelect} = this.props;
+        const {onDelete} = this.props;
+        const {isArticleSelected} = this.props;
+
 
         return (
             <div>
@@ -192,70 +190,23 @@ class ArticleListComponent extends Component {
                     <div>
                         <ArticleTableToolbar
                             select={numSelected}
-                            onDelete={this.handleDeleteArticles}
+                            onDelete={onDelete}
                         />
+
                         <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            checked={isSelectAll}
-                                            onChange={this.handleToggleAll}
-                                        />
-                                    </TableCell>
-                                    <TableCell>Id</TableCell>
-                                    <TableCell>Title</TableCell>
-                                    <TableCell>Create Date</TableCell>
-                                    <TableCell>Parent page</TableCell>
-                                    <TableCell>Order</TableCell>
-                                    <TableCell>Edit</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {articles.map(row => {
-                                    const isSelected = this.isArticleSelected(row.id);
-                                    return (
-                                        <TableRow key={row.id}>
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isSelected}
-                                                    onChange={(event) => this.handleSelectArticle(event, row.id)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>{row.id}</TableCell>
-                                            <TableCell>{row.title}</TableCell>
-                                            <TableCell>{row.createDate}</TableCell>
+                            <ArticleTableHead
+                                isSelectAll={isSelectAll}
+                                onSelectAll={onSelectAll}
+                            />
 
-                                            <TableCell>
-                                                {row.page ? (
-                                                    <Typography
-                                                        component={Link}
-                                                        to={'/admin/page/edit/' + row.page.id}
-                                                    >
-                                                        {row.page.title}
-                                                    </Typography>
-                                                ) : 'No parent page yet'}
-                                            </TableCell>
-
-                                            <TableCell>{row.orderNumber}</TableCell>
-
-                                            <TableCell>
-                                                <IconButton component={Link} to={{
-                                                    pathname: "/admin/article/edit/" + row.id,
-                                                    state: {
-                                                        articlesOrder: articles.map(a => a.orderNumber)
-                                                    }
-                                                }}>
-                                                    <EditIcon/>
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
+                            <ArticleTableBody articles={articles}
+                                              isArticleSelected={isArticleSelected}
+                                              onSelect={onSelect}
+                            />
                         </Table>
                     </div>
                 </ContentComponent>
+
                 <div className={classes.createArticleTooltip}>
                     <Tooltip title="Create new article">
                         <Button color="secondary"
@@ -274,10 +225,17 @@ class ArticleListComponent extends Component {
 ArticleListComponent.propType = {
     classes: PropType.object.isRequired,
     navigation: PropType.string.isRequired,
+
     articles: PropType.array.isRequired,
-    selected: PropType.array.isRequired,
     isSelectAll: PropType.bool.isRequired,
-    numSelected: PropType.number.isRequired
+    numSelected: PropType.number.isRequired,
+
+    onSelectAll: PropType.func.isRequired,
+    onSelect: PropType.func.isRequired,
+    onDelete: PropType.func.isRequired,
+    isSelected: PropType.func.isRequired,
+
+
 };
 
 export default withStyles(Style)(ArticleListComponent);

@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
-import {connect} from 'react-redux';
-import {deletePage, fetchPages} from "../action/pageActions";
-import PageListComponent from "../component/PageListComponent";
+import PropType from 'prop-types';
+import ArticleListComponent from "../component/ArticleListComponent";
 import InfoWindow from "../../utils/InfoWindow";
 
-class PageListContainer extends Component {
+import {connect} from 'react-redux';
+import {fetchArticles, deleteArticles} from "../action/articleActions";
+
+class ArticleListContainer extends Component {
     constructor(props) {
         super(props);
 
@@ -14,20 +14,20 @@ class PageListContainer extends Component {
             selected: [],
             isSelectAll: false,
             numSelected: 0,
-            responseMessage: '',
             isDataLoad: false
-        };
+        }
     }
 
     handleSelectAll = () => {
+        const {articles} = this.props;
+
         const {isSelectAll} = this.state;
-        const {pages} = this.props;
 
         if (!isSelectAll) {
             this.setState({
                 isSelectAll: true,
-                selected: pages.map(n => n.id),
-                numSelected: pages.length
+                selected: articles.map(n => n.id),
+                numSelected: articles.length
             });
         } else {
             this.setState({
@@ -36,10 +36,11 @@ class PageListContainer extends Component {
                 numSelected: 0
             });
         }
+
     };
 
-    handleSelectPage = (event, id) => {
-        const {pages} = this.props;
+    handleSelectArticle = (event, id) => {
+        const {articles} = this.props;
 
         const {selected} = this.state;
         const {isSelectAll} = this.state;
@@ -52,7 +53,7 @@ class PageListContainer extends Component {
 
             if (isSelectAll && selected.length === 0) {
                 this.setState({selected: [], isSelectAll: false});
-            } else if (isSelectAll && selected.length !== pages.length) {
+            } else if (isSelectAll && selected.length !== articles.length) {
                 this.setState({isSelectAll: false});
             }
 
@@ -60,7 +61,7 @@ class PageListContainer extends Component {
         } else {
             selected.push(id);
 
-            if (!isSelectAll && selected.length === pages.length) {
+            if (!isSelectAll && selected.length === articles.length) {
                 this.setState({isSelectAll: true});
             }
 
@@ -68,77 +69,79 @@ class PageListContainer extends Component {
         }
 
         this.setState({numSelected: selected.length});
+
+
     };
 
-    handleOnDeletePages = () => {
-        const {selected} = this.state;
-        this.props.deletePage(selected);
-
-        this.setState({
-            numSelected: 0,
-            selected: [],
-            isSelectAll: false,
-            responseMessage: selected.length + " page(s) was deleted successfully"
-        })
-    };
-
-    isPageSelected = id => {
+    isArticleSelected = id => {
         return this.state.selected.indexOf(id) !== -1;
     };
 
+    handleDeleteArticles = () => {
+        const {selected} = this.state;
+
+        this.props.deleteArticles(selected);
+
+        this.setState({
+            selected: [],
+            isSelectAll: false,
+            numSelected: 0
+        });
+    };
+
     componentWillMount() {
-        this.props.fetchPages();
+        this.props.fetchArticles();
     }
 
     componentWillReceiveProps = nextProps => {
-        if (nextProps.pages) {
-            this.setState({isDataLoad: true})
+        if (nextProps.articles) {
+            this.setState({isDataLoad: true});
         }
     };
 
     render() {
-        const {pages} = this.props;
-        const {numSelected} = this.state;
-        const {isSelectAll} = this.state;
-        const {isDataLoad} = this.state;
+        const {articles} = this.props;
 
         const {open} = this.props;
         const {message} = this.props;
+
+        const {isSelectAll} = this.state;
+        const {numSelected} = this.state;
+        const {isDataLoad} = this.state;
+
         return (
             isDataLoad ? (
                 <div>
-                    <PageListComponent pages={pages}
-                                       numSelected={numSelected}
-                                       isSelectAll={isSelectAll}
-                                       isPageSelected={this.isPageSelected}
-                                       onSelectPage={this.handleSelectPage}
-                                       onSelectAll={this.handleSelectAll}
-                                       onDeletePages={this.handleOnDeletePages}/>
+                <ArticleListComponent articles={articles}
+                                      numSelected={numSelected}
+                                      isSelectAll={isSelectAll}
+                                      onSelectAll={this.handleSelectAll}
+                                      onSelect={this.handleSelectArticle}
+                                      onDelete={this.handleDeleteArticles}
+                                      isArticleSelected={this.isArticleSelected}/>
+
                     {open ? (
                         <InfoWindow open={open} message={message}/>
-                    ) : null}
-
+                    ): null}
                 </div>
             ) : null
         )
-
     }
 
 }
 
-PageListContainer.propType = {
-    fetchPages: PropTypes.func.isRequired,
-    deletePage: PropTypes.func.isRequired,
-    pages: PropTypes.array.isRequired
+ArticleListContainer.propType = {
+    fetchArticles: PropType.func.isRequired
 };
 
 
 const mapStateToProps = state => {
     return {
-        pages: state.pages.pages,
+        articles: state.articles.articles,
+        //for dialog
         open: state.info.open,
         message: state.info.message
     }
 };
 
-export default connect(mapStateToProps, {fetchPages, deletePage})(PageListContainer);
+export default connect(mapStateToProps, {fetchArticles, deleteArticles})(ArticleListContainer)
