@@ -4,11 +4,12 @@ import NavigationBar from "../navigaion/component/NavigationBar";
 import ArticleListComponent from "../article/component/ArticleListComponent";
 import AddArticleComponent from "../article/component/AddArticleComponent";
 import EditArticleComponent from "../article/component/EditArticleComponent";
-import PageListComponent from "../page/component/PageListComponent";
-import AddPageComponent from "../page/component/AddPageComponent";
-import EditPageComponent from "../page/component/EditPageComponent";
+
 import FileManagerComponent from "../file/component/FileManagerComponent";
+
 import PageListContainer from "../page/container/PageListContainer";
+import PageAddContainer from "../page/container/PageAddContainer";
+import PageEditContainer from "../page/container/PageEditContainer";
 
 
 class AdminSiteRouter extends Component {
@@ -25,9 +26,9 @@ class AdminSiteRouter extends Component {
                     <Route exact path="/admin/page"
                            component={PageListContainer}/>
                     <Route exact path="/admin/page/add"
-                           component={AddPageComponent}/>
+                           component={PageAddContainer}/>
                     <Route exact path="/admin/page/edit/:id"
-                           component={EditPageComponent}/>
+                           component={PageEditContainer}/>
                     <Route exact path="/admin/files"
                            component={FileManagerComponent}/>
                 </NavigationBar>

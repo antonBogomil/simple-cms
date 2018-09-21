@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 import UploadButton from "../../utils/UploadButton";
-import InfoSnackBar from "../../utils/InfoSnackBar";
+import InfoWindow from "../../utils/InfoWindow";
 
 
 
@@ -401,10 +401,10 @@ class FileManagerComponent extends Component {
                                                 onSuccess={this.handleOnSuccess}/>
 
 
-                            <InfoSnackBar open={openInfoDialog}
-                                          onClose={() => this.setState({openInfoDialog: false})}
-                                          timeOut={2000}
-                                          message={infoMessage}/>
+                            <InfoWindow open={openInfoDialog}
+                                        onClose={() => this.setState({openInfoDialog: false})}
+                                        timeOut={2000}
+                                        message={infoMessage}/>
 
                         </Grid>
 

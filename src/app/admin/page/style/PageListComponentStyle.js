@@ -25,7 +25,7 @@ const style = theme => ({
         position: 'fixed',
         bottom: 0,
         right: 0,
-        padding: '15px'
+        padding: '20px'
     },
 });
 

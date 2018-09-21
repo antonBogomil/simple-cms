@@ -1,4 +1,4 @@
-import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE} from "../actions/type";
+import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, EDIT_PAGE, GET_PAGE} from "../actions/type";
 
 const initialState = {
     pages: [],
@@ -7,7 +7,6 @@ const initialState = {
 
 
 export default function (state = initialState, action) {
-    console.log(action);
 
     switch (action.type) {
         case FETCH_PAGES: {
@@ -38,6 +37,25 @@ export default function (state = initialState, action) {
 
         }
 
+        case EDIT_PAGE: {
+            const page = action.payload;
+            const pages = state.pages;
+
+            const indexPage = pages.findIndex(p => p.id === page.id);
+            pages[indexPage] = page;
+
+            return {
+                ...state,
+                pages: pages
+            }
+        }
+
+        case GET_PAGE: {
+            return{
+                ...state,
+                page: action.payload
+            }
+        }
 
         default:
             return state;

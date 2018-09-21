@@ -25,8 +25,52 @@ import classNames from 'classnames';
 
 
 import Style from '../style/PageListComponentStyle';
-import InfoSnackBar from "../../utils/InfoSnackBar";
 
+
+
+class PageTableToolbar extends Component {
+
+    handleDeletePage = () => {
+        const {onDelete} = this.props;
+        onDelete();
+    };
+
+    render() {
+        const {isSelect} = this.props;
+        const {classes} = this.props;
+        const toolbarStylee = classNames(null, {
+            [classes.selectToolBar]: isSelect > 0
+        });
+
+        return (
+            <Toolbar className={toolbarStylee}>
+                {isSelect === 0 ? (
+                    <Typography variant="title">
+                        Pages
+                    </Typography>
+                ) : (
+
+                    <div className={classes.toolBarSelected}>
+                        <Typography variant="title">
+                            {isSelect} selected
+                        </Typography>
+                        <Tooltip title="Delete">
+                            <IconButton
+                                aria-label="Delete"
+                                onClick={this.handleDeletePage}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+
+                )}
+
+            </Toolbar>
+        )
+    };
+}
+
+PageTableToolbar = withStyles(Style)(PageTableToolbar);
 
 class PageArticlesExpansionPanelComponent extends Component {
 
@@ -35,7 +79,7 @@ class PageArticlesExpansionPanelComponent extends Component {
 
         return (
             <div style={{width: '100%'}}>
-                {articles.length === 0 ? "No articles yet" : (
+                {articles === undefined ||  articles.length === 0 ? "No articles yet" : (
                     <Select>
                         <MenuItem value="" disabled>
                             Choose an article
@@ -63,59 +107,10 @@ class PageArticlesExpansionPanelComponent extends Component {
     };
 }
 
-
-class PageTableToolbar extends Component {
-
-    handleDeletePage = () => {
-        const {onDelete} = this.props;
-        onDelete();
-    };
-
-    render() {
-        const {select} = this.props;
-        const {classes} = this.props;
-        const toolbarStylee = classNames(null, {
-            [classes.selectToolBar]: select > 0
-        });
-
-        return (
-            <Toolbar className={toolbarStylee}>
-                {select === 0 ? (
-                    <Typography variant="title">
-                        Pages
-                    </Typography>
-                ) : (
-
-                    <div className={classes.toolBarSelected}>
-                        <Typography variant="title">
-                            {select} selected
-                        </Typography>
-                        <Tooltip title="Delete">
-                            <IconButton
-                                aria-label="Delete"
-                                onClick={this.handleDeletePage}>
-                                <DeleteIcon/>
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-
-                )}
-
-            </Toolbar>
-        )
-    };
-}
-PageTableToolbar = withStyles(Style)(PageTableToolbar);
-
-
 class PageTableHead extends Component {
-
-    handleChooseAll = () => {
-        this.props.onChooseAll();
-    };
-
     render() {
         const {isSelectAll} = this.props;
+        const {onChooseAll} = this.props;
 
         return (
             <TableHead>
@@ -123,7 +118,7 @@ class PageTableHead extends Component {
                     <TableCell padding="checkbox">
                         <Checkbox
                             checked={isSelectAll}
-                            onChange={this.handleChooseAll}
+                            onChange={onChooseAll}
                         />
                     </TableCell>
                     <TableCell>Id</TableCell>
@@ -141,6 +136,27 @@ class PageTableHead extends Component {
     }
 }
 
+class PageTableBody extends Component {
+    render() {
+        const {pages} = this.props;
+        const {isPageSelected} = this.props;
+        const {onSelectPage} = this.props;
+
+        return (
+            <TableBody>
+                {pages.map(row => {
+                    const isSelected = isPageSelected(row.id);
+                    return (
+                        <PageTableItem key={row.id}
+                                       page={row}
+                                       onSelectPage={onSelectPage}
+                                       isSelected={isSelected}/>
+                    );
+                })}
+            </TableBody>
+        );
+    }
+}
 
 class PageTableItem extends Component {
     render() {
@@ -197,124 +213,36 @@ class PageTableItem extends Component {
 }
 
 
-
 class PageListComponent extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            pages: [],
-            selected: [],
-            isSelectAll: false,
-            numSelected: 0,
-            responseMessage: '',
-        };
-
-    }
-
-    handleToggleAll = () => {
-        const {isSelectAll} = this.state;
-        const {pages} = this.props;
-
-        if (!isSelectAll) {
-            this.setState({
-                isSelectAll: true,
-                selected: pages.map(n => n.id),
-                numSelected: pages.length
-            });
-        } else {
-            this.setState({
-                isSelectAll: false,
-                selected: [],
-                numSelected: 0
-            });
-        }
-
-    };
-
-    handleSelectPage = (event, id) => {
-        const {pages} = this.props;
-
-        const {selected} = this.state;
-        const {isSelectAll} = this.state;
-
-        const isArticleChecked = selected.indexOf(id) !== -1;
-
-        if (isArticleChecked) {
-            const index = selected.indexOf(id);
-            selected.splice(index, 1);
-
-            if (isSelectAll && selected.length === 0) {
-                this.setState({selected: [], isSelectAll: false});
-            } else if (isSelectAll && selected.length !== pages.length) {
-                this.setState({isSelectAll: false});
-            }
-
-            this.setState({selected: selected});
-        } else {
-            selected.push(id);
-
-            if (!isSelectAll && selected.length === pages.length) {
-                this.setState({isSelectAll: true});
-            }
-
-            this.setState({selected: selected});
-        }
-
-        this.setState({numSelected: selected.length});
-
-
-    };
-
-    handleDeletePages = () => {
-        const {selected} = this.state;
-        const {onDeletePages} = this.props;
-        onDeletePages(selected);
-
-        this.setState({
-            numSelected: 0,
-            selected: [],
-            isSelectAll: false,
-            responseMessage: selected.length + " page(s) was deleted successfully"
-        })
-    };
-
-    isPageSelected = id => {
-        return this.state.selected.indexOf(id) !== -1;
-    };
-
     render() {
         const {classes} = this.props;
         const {pages} = this.props;
 
-        const {isSelectAll} = this.state;
-        const {numSelected} = this.state;
-        const {responseMessage} = this.state;
+        const {isSelectAll} = this.props;
+        const {numSelected} = this.props;
+        const {responseMessage} = this.props;
+
+        const {onSelectPage} = this.props;
+        const {onSelectAll} = this.props;
+        const {isPageSelected} = this.props;
+        const {onDeletePages} = this.props;
 
         return (
             <div>
                 <ContentComponent navigation="Pages / List">
                     <div>
                         <PageTableToolbar
-                            select={numSelected}
-                            onDelete={this.handleDeletePages}
+                            isSelect={numSelected}
+                            onDelete={onDeletePages}
                         />
 
                         <Table className={classes.table}>
                             <PageTableHead isSelectAll={isSelectAll}
-                                           onChooseAll={this.handleToggleAll}/>
+                                           onChooseAll={onSelectAll}/>
 
-                            <TableBody>
-                                {pages.map(row => {
-                                    const isSelected = this.isPageSelected(row.id);
-                                    return (
-                                        <PageTableItem key={row.id}
-                                                       page={row}
-                                                       onSelectPage={this.handleSelectPage}
-                                                       isSelected={isSelected}/>
-                                    );
-                                })}
-                            </TableBody>
+                            <PageTableBody pages={pages}
+                                           onSelectPage={onSelectPage}
+                                           isPageSelected={isPageSelected}/>
                         </Table>
                     </div>
                 </ContentComponent>
@@ -330,10 +258,6 @@ class PageListComponent extends Component {
                     </Tooltip>
                 </div>
 
-
-                {responseMessage ? (
-                    <InfoSnackBar timeOut={2000} message={responseMessage}/>
-                ) : ''}
             </div>
         );
     }
@@ -342,9 +266,15 @@ class PageListComponent extends Component {
 PageListComponent.propType = {
     classes: PropType.object.isRequired,
     navagition: PropType.string.isRequired,
-    selected: PropType.array.isRequired,
+
     isSelectAll: PropType.bool.isRequired,
-    numSelected: PropType.number.isRequired
+    numSelected: PropType.number.isRequired,
+
+    onSelectPage: PropType.func.isRequired,
+    onSelectAll: PropType.func.isRequired,
+    onDeletePages: PropType.func.isRequired,
+    isPageSelected: PropType.func.isRequired,
+
 };
 
 export default withStyles(Style)(PageListComponent);

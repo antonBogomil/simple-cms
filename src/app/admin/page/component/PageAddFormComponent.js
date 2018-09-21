@@ -10,13 +10,13 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-import axios from 'axios';
+
 
 import Style from '../style/AddPageComponentStyle';
-import InfoSnackBar from "../../utils/InfoSnackBar";
+import InfoWindow from "../../utils/InfoWindow";
 
 
-class AddPageComponent extends Component {
+class PageAddFormComponent extends Component {
     constructor(props) {
         super(props);
 
@@ -25,8 +25,6 @@ class AddPageComponent extends Component {
             url: '',
             metaKeywords: '',
             metaDescription: '',
-            responseMessage: '',
-            openInfoDialog: false,
             isMainPage: false,
         };
     }
@@ -34,33 +32,18 @@ class AddPageComponent extends Component {
     handeSavePage = event => {
         event.preventDefault();
 
-        const {title, url, metaKeywords, metaDescription, isMainPage} = this.state;
+        const page = {
+            title: this.state.title,
+            url: this.state.url,
+            metaDescription: this.state.metaDescription,
+            metaKeywords: this.state.metaKeywords,
+            isMainPage: this.state.isMainPage
+        };
 
-        const formData = new FormData();
-        formData.set('title', title);
-        formData.set('url', url);
-        formData.set('metaKeywords', metaKeywords);
-        formData.set('metaDescription', metaDescription);
-        formData.set('isMainPage', isMainPage);
+        const {onPageCreate} = this.props;
+        onPageCreate(page);
 
-        axios.post('/api/page/save', formData)
-            .then(response => {
-                this.setState({
-                    responseMessage: response.data.message,
-                    openInfoDialog: true,
-                    title: '',
-                    url: '',
-                    metaKeywords: '',
-                    metaDescription: ''
-                });
-            }).catch(exception => {
-            const errorMgs = exception.response.data.message;
-            this.setState({
-                responseMessage: errorMgs,
-                openInfoDialog: true
-            });
-        })
-
+        this.handleClearForm();
     };
 
     handleClearForm = () => {
@@ -80,13 +63,19 @@ class AddPageComponent extends Component {
 
     render() {
         const {classes} = this.props;
-        const {responseMessage, openInfoDialog} = this.state;
-        const {title, url, metaDescription, metaKeywords, isMainPage} = this.state;
+
+        const {
+            title,
+            url,
+            metaDescription,
+            metaKeywords,
+            isMainPage
+        } = this.state;
 
         const urlPlaceholder = "Enter the url of website page (" + window.location.origin + "/)";
 
+
         return (
-            <div>
                 <ContentComponent navigation="Page / Add">
                     <div className={classes.mainFormWrapper}>
                         <Typography variant="headline"
@@ -180,23 +169,15 @@ class AddPageComponent extends Component {
                             </div>
                         </form>
                     </div>
-
-
-                    <InfoSnackBar open={openInfoDialog}
-                                  onClose={() => this.setState({openInfoDialog: false})}
-                                  timeOut={2000}
-                                  message={responseMessage}/>
-
-
                 </ContentComponent>
-            </div>
+
         );
     }
 }
 
-AddPageComponent.propType = {
+PageAddFormComponent.propType = {
     classes: PropType.object.isRequired,
     navigation: PropType.string.isRequired
 };
 
-export default withStyles(Style)(AddPageComponent);
+export default withStyles(Style)(PageAddFormComponent);

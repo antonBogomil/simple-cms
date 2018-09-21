@@ -28,9 +28,8 @@ class App extends Component {
         const {isDataLoad} = this.props;
 
         return (
-            <div className="fullHeight">
-
-                {isDataLoad ? (
+            isDataLoad ? (
+                <div className="fullHeight">
                     <BrowserRouter>
                         <Switch>
                             {/* Admin routings */}
@@ -59,8 +58,8 @@ class App extends Component {
 
                         </Switch>
                     </BrowserRouter>
-                ) : null}
-            </div>
+                </div>
+            ) : null
         );
     }
 }

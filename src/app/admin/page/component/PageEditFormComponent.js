@@ -13,18 +13,17 @@ import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
-import axios from 'axios';
 import Style from '../style/EditPageComponentStyle';
-import InfoSnackBar from "../../utils/InfoSnackBar";
+import InfoWindow from "../../utils/InfoWindow";
 
 
-class EditPageComponent extends Component {
+class PageEditFormComponent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isDataLoad: false,
             page: {},
+            isDataLoad: false,
             responseMessage: '',
             openInfoDialog: false
         };
@@ -34,29 +33,8 @@ class EditPageComponent extends Component {
         event.preventDefault();
 
         const {page} = this.state;
-
-        const formData = new FormData();
-        formData.set('title', page.title);
-        formData.set('url', page.url);
-        formData.set('metaKeywords', page.metaKeywords);
-        formData.set('metaDescription', page.metaDescription);
-        formData.set('isMainPage', page.isMainPage);
-        formData.set('articles', page.articles.map(a => a.id));
-
-
-        axios.post('/api/page/update/' + page.id, formData)
-            .then(response => {
-                this.setState({
-                    responseMessage: response.data.message,
-                    openInfoDialog: true
-                });
-            }).catch(exception => {
-            const errorMgs = exception.response.data.message;
-            this.setState({
-                responseMessage: errorMgs,
-                openInfoDialog: true
-            });
-        })
+        const {onPageUpdate} = this.props;
+        onPageUpdate(page, page.id);
 
     };
 
@@ -84,24 +62,15 @@ class EditPageComponent extends Component {
         this.setState({page: page});
     };
 
-    componentDidMount() {
-        const {id} = this.props.match.params;
 
-        axios.get("/api/page/get/" + id)
-            .then(response => {
-                this.setState({
-                    page: response.data,
-                    isDataLoad: true
-                });
-            })
-            .catch(exception => {
-                const errorMgs = exception.response.data.message;
-                this.setState({
-                    responseMessage: errorMgs,
-                    openInfoDialog: true
-                });
-            })
-    }
+    componentWillReceiveProps = nextProps => {
+        if (nextProps.page) {
+            this.setState({
+                page: nextProps.page,
+                isDataLoad: true
+            });
+        }
+    };
 
     render() {
         const {classes} = this.props;
@@ -246,10 +215,10 @@ class EditPageComponent extends Component {
                     ) : null}
 
 
-                    <InfoSnackBar open={openInfoDialog}
-                                  onClose={() => this.setState({openInfoDialog: false})}
-                                  timeOut={2000}
-                                  message={responseMessage}/>
+                    <InfoWindow open={openInfoDialog}
+                                onClose={() => this.setState({openInfoDialog: false})}
+                                timeOut={2000}
+                                message={responseMessage}/>
 
 
                 </ContentComponent>
@@ -258,10 +227,10 @@ class EditPageComponent extends Component {
     }
 }
 
-EditPageComponent.propType = {
+PageEditFormComponent.propType = {
     classes: PropType.object.isRequired,
     navigation: PropType.string.isRequired,
     page: PropType.object.isRequired
 };
 
-export default withStyles(Style)(EditPageComponent);
+export default withStyles(Style)(PageEditFormComponent);

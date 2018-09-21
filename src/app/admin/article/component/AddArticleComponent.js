@@ -17,7 +17,7 @@ import JoditEditor from "jodit-react";
 
 
 import Style from '../style/AddArticleComponentStyle';
-import InfoSnackBar from "../../utils/InfoSnackBar";
+import InfoWindow from "../../utils/InfoWindow";
 import AlertDialogComponent from "../../utils/AlertDialogComponent";
 
 class ArticleFormPageChooser extends Component {
@@ -222,10 +222,10 @@ class AddArticleComponent extends Component {
 
 
                     {responseMessage !== '' ? (
-                        <InfoSnackBar open={openInfoDialog}
-                                      onClose={()=> this.setState({openInfoDialog: false})}
-                                      timeOut={2000}
-                                      message={responseMessage}/>
+                        <InfoWindow open={openInfoDialog}
+                                    onClose={()=> this.setState({openInfoDialog: false})}
+                                    timeOut={2000}
+                                    message={responseMessage}/>
                     ) : ''
                     }
 

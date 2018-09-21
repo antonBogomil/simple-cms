@@ -16,7 +16,7 @@ import 'jodit/build/jodit.min.css';
 import JoditEditor from "jodit-react";
 
 import Style from '../style/EditArticleComponentStyle';
-import InfoSnackBar from "../../utils/InfoSnackBar";
+import InfoWindow from "../../utils/InfoWindow";
 
 class EditArticleComponent extends Component {
     constructor(props) {
@@ -237,10 +237,10 @@ class EditArticleComponent extends Component {
                 ) : null}
 
 
-                    <InfoSnackBar open={openInfoDialog}
-                                  onClose={()=> this.setState({openInfoDialog: false})}
-                        timeOut={2000}
-                        message={responseMessage}/>
+                    <InfoWindow open={openInfoDialog}
+                                onClose={()=> this.setState({openInfoDialog: false})}
+                                timeOut={2000}
+                                message={responseMessage}/>
 
 
 
