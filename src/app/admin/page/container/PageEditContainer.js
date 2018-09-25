@@ -17,7 +17,7 @@ class PageEditContainer extends Component {
 
 
         this.props.editPage(formData, id);
-        this.props.history.push('/admin/page');
+        this.props.history.goBack();
     };
 
     componentWillMount() {

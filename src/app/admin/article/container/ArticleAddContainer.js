@@ -78,7 +78,11 @@ class ArticleAddContainer extends Component {
 }
 
 ArticleAddContainer.propType = {
-    createArticle: PropType.func.isRequired
+    createArticle: PropType.func.isRequired,
+
+    pages: PropType.array.isRequired,
+    open: PropType.bool.isRequired,
+    message: PropType.string.isRequired
 };
 
 

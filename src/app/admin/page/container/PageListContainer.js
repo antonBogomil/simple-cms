@@ -87,7 +87,11 @@ class PageListContainer extends Component {
     };
 
     componentWillMount() {
-        this.props.fetchPages();
+        if(!this.props.pages || this.props.pages.length === 0) {
+            this.props.fetchPages();
+        }else{
+            this.setState({isDataLoad: true})
+        }
     }
 
     componentWillReceiveProps = nextProps => {
@@ -136,6 +140,7 @@ PageListContainer.propType = {
 const mapStateToProps = state => {
     return {
         pages: state.pages.pages,
+
         open: state.info.open,
         message: state.info.message
     }

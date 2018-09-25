@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Switch, Route} from 'react-router-dom';
 import NavigationBar from "../navigaion/component/NavigationBar";
 
-import EditArticleComponent from "../article/component/EditArticleComponent";
 
 import FileManagerComponent from "../file/component/FileManagerComponent";
 
@@ -11,6 +10,7 @@ import PageAddContainer from "../page/container/PageAddContainer";
 import PageEditContainer from "../page/container/PageEditContainer";
 import ArticleListContainer from "../article/container/ArticleListContainer";
 import ArticleAddContainer from "../article/container/ArticleAddContainer";
+import ArticleEditContainer from "../article/container/ArticleEditContainer";
 
 
 class AdminSiteRouter extends Component {
@@ -23,7 +23,7 @@ class AdminSiteRouter extends Component {
                     <Route exact path="/admin/article/add"
                            component={ArticleAddContainer}/>
                     <Route exact path="/admin/article/edit/:id"
-                           component={EditArticleComponent}/>
+                           component={ArticleEditContainer}/>
                     <Route exact path="/admin/page"
                            component={PageListContainer}/>
                     <Route exact path="/admin/page/add"

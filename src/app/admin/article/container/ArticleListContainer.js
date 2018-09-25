@@ -90,7 +90,11 @@ class ArticleListContainer extends Component {
     };
 
     componentWillMount() {
-        this.props.fetchArticles();
+        if(!this.props.articles || this.props.articles.length === 0) {
+            this.props.fetchArticles();
+        }else{
+            this.setState({isDataLoad: true})
+        }
     }
 
     componentWillReceiveProps = nextProps => {
