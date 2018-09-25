@@ -7,8 +7,8 @@ import store from '../../../store';
 import {openWindowDispatch} from '../../../actions/info/types';
 import InfoWindow from '../../utils/InfoWindow';
 import FileManagerComponent from '../component/FileManagerComponent';
-import FileManagerOptions from '../component/FileManagerOptions';
 import FolderViewComponent from '../component/FolderViewComponent';
+import FileManagerOptions from "../component/FileManagerOptions";
 
 
 class FileManagerContainer extends Component {
@@ -26,14 +26,14 @@ class FileManagerContainer extends Component {
         const url = '/api/folder/get' + (name ? '/' + name : '');
 
         axios.get(url)
-            .then(response => {
-                const root = response;
+            .then(response => response.data)
+            .then(data => {
+                const root = data;
 
                 const {pathHistory} = this.state;
                 pathHistory.push(root.name);
 
                 const child = root.children;
-
                 if (child !== undefined) {
                     //sort child, directory first
                     child.sort((a, b) => b.directory - a.directory);
@@ -48,7 +48,7 @@ class FileManagerContainer extends Component {
                 });
             })
             .catch(exception => {
-                const data = exception.response.data;
+                const data = exception.response;
                 store.dispatch(openWindowDispatch(data.message));
             })
 
@@ -72,7 +72,7 @@ class FileManagerContainer extends Component {
                 }
             })
             .catch(exception => {
-                const data = exception.response.data;
+                const data = exception.response;
                 store.dispatch(openWindowDispatch(data.message));
             })
 
@@ -99,11 +99,11 @@ class FileManagerContainer extends Component {
 
                 if (code === 200) {
                     const {currFolder} = this.state;
-                    this.handleGetFolder(currFolder.name);
+                    this.handleOpenFolder(currFolder.name);
                 }
             })
             .catch(exception => {
-                const data = exception.response.data;
+                const data = exception.response;
                 store.dispatch(openWindowDispatch(data.message));
             })
 
@@ -122,11 +122,11 @@ class FileManagerContainer extends Component {
 
                 if (code === 200) {
                     const {currFolder} = this.state;
-                    this.handleGetFolder(currFolder.name);
+                    this.handleOpenFolder(currFolder.name);
                 }
             })
             .catch(exception => {
-                const data = exception.response.data;
+                const data = exception.response;
                 store.dispatch(openWindowDispatch(data.message));
             });
 
@@ -138,7 +138,7 @@ class FileManagerContainer extends Component {
 
     handleOnSuccess = () => {
         const {currFolder} = this.state;
-        this.handleGetFolder(currFolder.name);
+        this.handleOpenFolder(currFolder.name);
     };
 
     handleGoBack = () => {
@@ -149,7 +149,7 @@ class FileManagerContainer extends Component {
 
         // remove folder name and open it
         const prevFolder = pathHistory.pop();
-        this.handleGetFolder(prevFolder);
+        this.handleOpenFolder(prevFolder);
 
         this.setState({pathHistory: pathHistory});
     };
@@ -157,7 +157,6 @@ class FileManagerContainer extends Component {
     componentDidMount() {
         this.handleOpenFolder();
     }
-
 
     render() {
         const {open} = this.props;
