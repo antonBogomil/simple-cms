@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import axios from "axios";
 import Grid from "@material-ui/core/Grid/Grid";
 import Button from "@material-ui/core/Button/Button";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,7 +10,6 @@ import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core";
 import Style from "../style/FileManagerOptionsStyle";
 
-//TODO: Change file manager module, make this module use redux, divide module components to containers
 
 class FileManagerOptions extends Component {
     constructor(props) {
@@ -32,7 +30,6 @@ class FileManagerOptions extends Component {
 
         this.setState({folderName: ''});
     };
-
 
     render() {
         const {classes} = this.props;
@@ -96,8 +93,8 @@ FileManagerOptions.propType = {
     onCancelUpload: PropTypes.func.isRequired,
 
     uploadProgress: PropTypes.number.isRequired,
+}
 
 
-};
 FileManagerOptions = withStyles(Style)(FileManagerOptions);
 export default FileManagerOptions;

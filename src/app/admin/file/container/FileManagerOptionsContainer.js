@@ -108,4 +108,4 @@ class FileManagerOptionsContainer extends Component {
 }
 
 
-export default (FileManagerOptionsContainer);
+export default FileManagerOptionsContainer;

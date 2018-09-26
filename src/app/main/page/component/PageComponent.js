@@ -3,6 +3,7 @@ import PropType from 'prop-types';
 
 import axios from 'axios';
 import PageViewComponent from "./PageViewComponent";
+import NotFoundPageComponent from "../../errors/NotFoundPageComponent";
 
 
 /***
@@ -45,7 +46,7 @@ class PageComponent extends Component {
         return (
             <div>
                 {isPageLoaded ? (
-                    page ? (<PageViewComponent page={page}/>) : "Not found (make page)"
+                    page ? (<PageViewComponent page={page}/>) : <NotFoundPageComponent/>
                 ) : null}
             </div>);
 

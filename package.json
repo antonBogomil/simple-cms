@@ -110,8 +110,7 @@
     "/api/*": {
       "target": "http://localhost:9090"
     },
-
-    "/media/*" : {
+    "/media/*": {
       "target": "http://localhost:9090"
     }
   }
