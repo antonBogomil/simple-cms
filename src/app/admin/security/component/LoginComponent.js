@@ -38,27 +38,16 @@ class LoginComponent extends Component {
     };
 
     handleLogin = () => {
-
         const {username} = this.state;
         const {password} = this.state;
 
-        const data = new FormData();
-        data.set('username', username);
-        data.set('password', password);
+        const {onLogin} = this.props;
+        onLogin(username, password);
 
-        axios.post('/api/auth/user', data)
-            .then(response => {
-                const code = response.data.code;
-
-                if (code === 200) {
-                    //TODO: get best resolving of problem with redirecting after successfully authentication
-                    window.location.reload();
-                }
-            }).catch(exception => {
-            console.log(exception);
+        this.setState({
+            username: '',
+            password: ''
         });
-
-        this.forceUpdate();
     };
 
 

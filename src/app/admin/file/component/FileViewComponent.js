@@ -43,8 +43,6 @@ class FileViewComponent extends Component {
         const {file} = this.props;
         const {onDelete} = this.props;
         onDelete(file);
-
-
     };
 
     handleRenameFile = newFileName => {
@@ -89,12 +87,11 @@ class FileViewComponent extends Component {
                   item xs={1}
                   className={classes.viewContainer}
                   onMouseEnter={() => this.setState({isHover: true})}
-                  onMouseLeave={() => this.setState({isHover: false})}
+                  onMouseLeave={() => this.setState({isHover: false})}>
 
-            >
                 <Grid item xs={12}
-                      title={file.name}
-                >
+                      title={file.name}>
+
                     {file.directory
                         ? (<FolderIcon
                             onClick={this.openFolder}
@@ -110,12 +107,14 @@ class FileViewComponent extends Component {
                                         {...defaultStyles[ext]}/>
                     }
 
+
                     <Grid item xs={12}>
-                        <Typography className={classes.fileLabel}
-                                    variant="caption">
+                        <Typography variant="caption"
+                                    className={classes.fileLabel}>
                             {file.name}
                         </Typography>
                     </Grid>
+
                 </Grid>
 
 
@@ -137,6 +136,7 @@ class FileViewComponent extends Component {
                     </Grid>
 
                 ) : null}
+
 
                 {openAlertDialog ? (
                     <ConfirmDialogComponent open={openAlertDialog}

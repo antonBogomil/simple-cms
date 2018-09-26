@@ -1,13 +1,13 @@
 import {combineReducers} from 'redux';
 
-import authReducer from './auth/authReducer';
+import securityReducer from '../admin/security/reducer/securityReducer';
 import infoReducer from './info/infoReducer';
 import pageReducer from "../admin/page/reducer/pageReducer";
 import articleReducer from '../admin/article/reducer/articleReducer';
 
 export default combineReducers({
     info: infoReducer,
-    auth: authReducer,
+    security: securityReducer,
     pages: pageReducer,
     articles: articleReducer
 });

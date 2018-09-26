@@ -23,12 +23,14 @@ export const createArticle = article => dispatch => {
     axios.post('/api/article/save', article)
         .then(response => response.data)
         .then(data => {
+            const code = data.code;
 
-            dispatch({
-                type: CREATE_ARTICLE,
-                payload: data.data
-            });
-
+            if (code === 201) {
+                dispatch({
+                    type: CREATE_ARTICLE,
+                    payload: data.data
+                });
+            }
             dispatch(openWindowDispatch(data.message));
         })
         .catch(exception => {

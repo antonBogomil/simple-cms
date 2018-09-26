@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 
 import MainComponent from "./main/MainComponent";
-import LoginComponent from "./admin/security/component/LoginComponent";
-import LogoutComponent from "./admin/security/component/LogoutComponent";
 import AdminSiteRouter from "./admin/routing/AdminSiteRouter";
 
 import {connect} from 'react-redux';
-import {checkAuth} from './actions/auth/authAction';
+import {checkAuth} from './admin/security/actions/securityAction';
+import LoginContainer from "./admin/security/container/LoginContainer";
+import LogoutContainer from "./admin/security/container/LogoutContainer";
 
 
 const PrivateRoute = ({component: Component, isAuth, ...rest}) => (
@@ -19,13 +19,32 @@ const PrivateRoute = ({component: Component, isAuth, ...rest}) => (
 
 class App extends Component {
 
-    componentWillMount() {
-        this.props.checkAuth();
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isDataLoad: false
+        }
     }
+
+    componentWillMount() {
+        if (this.props.isAuthenticated === undefined) {
+            this.props.checkAuth();
+        } else {
+            this.setState({isDataLoad: true})
+        }
+
+    }
+
+    componentWillReceiveProps = nextProps => {
+        if (nextProps.isAuthenticated !== undefined) {
+            this.setState({isDataLoad: true})
+        }
+    };
 
     render() {
         const {isAuthenticated} = this.props;
-        const {isDataLoad} = this.props;
+        const {isDataLoad} = this.state;
 
         return (
             isDataLoad ? (
@@ -43,11 +62,11 @@ class App extends Component {
                             <Route exact path="/admin/login"
                                    render={() => (
                                        isAuthenticated ? (<Redirect to={"/admin/dashboard"}/>)
-                                           : (<LoginComponent/>)
+                                           : (<LoginContainer/>)
                                    )}/>
 
                             <Route exact path="/admin/logout"
-                                   component={LogoutComponent}/>
+                                   component={LogoutContainer}/>
 
                             <PrivateRoute path="/admin"
                                           isAuth={isAuthenticated}
@@ -66,8 +85,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        isDataLoad: state.auth.isLoad
+        isAuthenticated: state.security.isAuthenticated,
     }
 };
 
