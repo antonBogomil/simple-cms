@@ -33,7 +33,6 @@ class FileManagerContainer extends Component {
                 pathHistory.push(root.name);
 
                 const child = root.children;
-
                 if (child !== undefined) {
                     //sort child, directory first
                     child.sort((a, b) => b.directory - a.directory);
@@ -137,7 +136,6 @@ class FileManagerContainer extends Component {
     componentDidMount() {
         this.handleOpenFolder();
     }
-
 
     render() {
         const {open} = this.props;

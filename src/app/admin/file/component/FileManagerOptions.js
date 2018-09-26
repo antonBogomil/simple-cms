@@ -33,8 +33,8 @@ class FileManagerOptions extends Component {
 
     render() {
         const {classes} = this.props;
-        const {uploadProgress} = this.props;
         const {onUpload} = this.props;
+        const {uploadProgress} = this.props;
         const {onCancelUpload} = this.props;
 
         const {folderName} = this.state;
@@ -93,8 +93,7 @@ FileManagerOptions.propType = {
     onCancelUpload: PropTypes.func.isRequired,
 
     uploadProgress: PropTypes.number.isRequired,
-}
-
+};
 
 FileManagerOptions = withStyles(Style)(FileManagerOptions);
 export default FileManagerOptions;
