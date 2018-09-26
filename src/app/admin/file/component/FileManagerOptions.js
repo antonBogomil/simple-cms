@@ -19,11 +19,8 @@ class FileManagerOptions extends Component {
 
         this.state = {
             folderName: '',
-            uploadComplete: 0
         };
 
-        this.cancelToken = axios.CancelToken;
-        this.source = this.cancelToken.source();
     }
 
     handleCreateFolder = event => {
@@ -31,63 +28,19 @@ class FileManagerOptions extends Component {
 
         const {onFolderCreate} = this.props;
         const {folderName} = this.state;
-        this.setState({folderName: ''});
-
         onFolderCreate(folderName);
 
+        this.setState({folderName: ''});
     };
 
-    uploadFiles = files => {
-        const {currentFolder} = this.props;
-
-        Array.from(files).forEach(file => {
-
-            const data = new FormData();
-            data.set('file', file);
-            data.set('folderName', currentFolder);
-
-            axios.post('/api/file/store', data, {
-                onUploadProgress: event => {
-                    const total = event.total;
-
-                    this.setState({
-                        uploadComplete: Math.round(event.loaded * 100) / total
-                    })
-                },
-
-                cancelToken: this.source.token,
-            }).then(response => {
-                const code = response.data.code;
-
-                if (code === 201) {
-                    const {onSuccess} = this.props;
-
-                    this.setState({uploadComplete: 0});
-                    onSuccess();
-                }
-
-            }).catch(exception => {
-                const msg = exception;
-                console.log(exception.response);
-                const {onFailure} = this.props;
-                onFailure(msg);
-            });
-
-
-        });
-
-
-    };
-
-    cancelUpload = () => {
-        this.source.cancel();
-        this.source = this.cancelToken.source();
-    };
 
     render() {
         const {classes} = this.props;
+        const {uploadProgress} = this.props;
+        const {onUpload} = this.props;
+        const {onCancelUpload} = this.props;
+
         const {folderName} = this.state;
-        const {uploadComplete} = this.state;
 
         return (
             <Grid item xs={4}
@@ -117,12 +70,12 @@ class FileManagerOptions extends Component {
                 <Grid item xs={12} className={classes.fileOption}>
                     <Grid item xs={12} className={classes.uploadContainer}>
                         <UploadButton
-                            onUpload={this.uploadFiles}
-                            onCancel={this.cancelUpload}
-                            complete={uploadComplete}/>
+                            onUpload={onUpload}
+                            onCancel={onCancelUpload}
+                            complete={uploadProgress}/>
 
 
-                        {uploadComplete !== 0 && uploadComplete === 100 ? (
+                        {uploadProgress !== 0 && uploadProgress === 100 ? (
                             <Typography variant="body1"
                                         color="textPrimary"
                                         className={classes.marginContainer}>
@@ -138,10 +91,13 @@ class FileManagerOptions extends Component {
 }
 
 FileManagerOptions.propType = {
-    onFailure: PropTypes.func.isRequired,
-    onSuccess: PropTypes.func.isRequired,
     onFolderCreate: PropTypes.func.isRequired,
-    currentFolder: PropTypes.string.isRequired,
+    onUpload: PropTypes.func.isRequired,
+    onCancelUpload: PropTypes.func.isRequired,
+
+    uploadProgress: PropTypes.number.isRequired,
+
+
 };
 FileManagerOptions = withStyles(Style)(FileManagerOptions);
 export default FileManagerOptions;

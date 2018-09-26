@@ -7,8 +7,8 @@ import store from '../../../store';
 import {openWindowDispatch} from '../../../actions/info/types';
 import InfoWindow from '../../utils/InfoWindow';
 import FileManagerComponent from '../component/FileManagerComponent';
-import FileManagerOptions from '../component/FileManagerOptions';
 import FolderViewComponent from '../component/FolderViewComponent';
+import FileManagerOptionsContainer from "./FileManagerOptionsContainer";
 
 
 class FileManagerContainer extends Component {
@@ -27,7 +27,7 @@ class FileManagerContainer extends Component {
 
         axios.get(url)
             .then(response => {
-                const root = response;
+                const root = response.data;
 
                 const {pathHistory} = this.state;
                 pathHistory.push(root.name);
@@ -48,34 +48,14 @@ class FileManagerContainer extends Component {
                 });
             })
             .catch(exception => {
-                const data = exception.response.data;
-                store.dispatch(openWindowDispatch(data.message));
+                const message = exception.response.data.message;
+                store.dispatch(openWindowDispatch(message));
             })
 
     };
 
-    handleCreateFolder = folderName => {
-        const {currFolder} = this.state;
-
-        //in post method data is the second param, so skip this argument
-        axios.post('/api/folder/create', '', {
-            params: {
-                folderName: folderName,
-                destPath: currFolder.name
-            }
-        })
-            .then(response => {
-                const status = response.status;
-
-                if (status === 201) {
-                    this.setState({currFolder: response.data})
-                }
-            })
-            .catch(exception => {
-                const data = exception.response.data;
-                store.dispatch(openWindowDispatch(data.message));
-            })
-
+    handleCreateFolder = currentFolder => {
+        this.setState({currFolder: currentFolder});
     };
 
     handleDownloadFile = file => {
@@ -99,12 +79,12 @@ class FileManagerContainer extends Component {
 
                 if (code === 200) {
                     const {currFolder} = this.state;
-                    this.handleGetFolder(currFolder.name);
+                    this.handleOpenFolder(currFolder.name);
                 }
             })
             .catch(exception => {
-                const data = exception.response.data;
-                store.dispatch(openWindowDispatch(data.message));
+                const message = exception.response.data.message;
+                store.dispatch(openWindowDispatch(message));
             })
 
     };
@@ -122,12 +102,12 @@ class FileManagerContainer extends Component {
 
                 if (code === 200) {
                     const {currFolder} = this.state;
-                    this.handleGetFolder(currFolder.name);
+                    this.handleOpenFolder(currFolder.name);
                 }
             })
             .catch(exception => {
-                const data = exception.response.data;
-                store.dispatch(openWindowDispatch(data.message));
+                const message = exception.response.data.message;
+                store.dispatch(openWindowDispatch(message));
             });
 
     };
@@ -138,7 +118,7 @@ class FileManagerContainer extends Component {
 
     handleOnSuccess = () => {
         const {currFolder} = this.state;
-        this.handleGetFolder(currFolder.name);
+        this.handleOpenFolder(currFolder.name);
     };
 
     handleGoBack = () => {
@@ -149,7 +129,7 @@ class FileManagerContainer extends Component {
 
         // remove folder name and open it
         const prevFolder = pathHistory.pop();
-        this.handleGetFolder(prevFolder);
+        this.handleOpenFolder(prevFolder);
 
         this.setState({pathHistory: pathHistory});
     };
@@ -176,10 +156,10 @@ class FileManagerContainer extends Component {
                                          onDelete={this.handleDeleteFile}
                                          onDownload={this.handleDownloadFile}/>
 
-                    <FileManagerOptions currentFolder={currFolder.name}
-                                        onFolderCreate={this.handleCreateFolder}
-                                        onFailure={this.handleOnFailure}
-                                        onSuccess={this.handleOnSuccess}/>
+                    <FileManagerOptionsContainer currentFolder={currFolder}
+                                                 onSuccess={this.handleOnSuccess}
+                                                 onFailure={this.handleOnFailure}
+                                                 onCreate={this.handleCreateFolder}/>
 
                 </FileManagerComponent>
 
