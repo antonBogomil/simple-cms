@@ -1,41 +1,89 @@
 import React, {Component} from 'react';
-import {Switch, Route} from 'react-router-dom';
-import NavigationBar from "../navigaion/component/NavigationBar";
+import {Switch, Route, Redirect} from 'react-router-dom';
 
-import PageListContainer from "../page/container/PageListContainer";
-import PageAddContainer from "../page/container/PageAddContainer";
-import PageEditContainer from "../page/container/PageEditContainer";
-import ArticleListContainer from "../article/container/ArticleListContainer";
-import ArticleAddContainer from "../article/container/ArticleAddContainer";
-import ArticleEditContainer from "../article/container/ArticleEditContainer";
-import FileManagerContainer from "../file/container/FileManagerContainer";
+import LoginContainer from "../security/container/LoginContainer";
+import LogoutContainer from "../security/container/LogoutContainer";
 
+import {connect} from 'react-redux';
+import {checkAuth} from "../security/actions/securityAction";
+import AdminDashboardRouter from "./AdminDashboardRouter";
+
+const PrivateRoute = ({component: Component, isAuth, ...rest}) => (
+    <Route {...rest} render={
+        (props) => (
+            isAuth ? <Component {...props} /> : <Redirect to='/admin/login'/>)}/>
+);
 
 class AdminSiteRouter extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isDataLoad: false
+        }
+    }
+
+    componentWillMount() {
+        if (this.props.isAuthenticated === undefined) {
+            this.props.checkAuth();
+        } else {
+            this.setState({isDataLoad: true})
+        }
+
+    }
+
+    componentWillReceiveProps = nextProps => {
+        if (nextProps.isAuthenticated !== undefined) {
+            this.setState({isDataLoad: true})
+        }
+    };
+
+
     render() {
+        const {isAuthenticated} = this.props;
+
+        const {isDataLoad} = this.state;
+
         return (
-            <Switch>
-                <NavigationBar>
-                    <Route exact path="/admin/article"
-                           component={ArticleListContainer}/>
-                    <Route exact path="/admin/article/add"
-                           component={ArticleAddContainer}/>
-                    <Route exact path="/admin/article/edit/:id"
-                           component={ArticleEditContainer}/>
-                    <Route exact path="/admin/page"
-                           component={PageListContainer}/>
-                    <Route exact path="/admin/page/add"
-                           component={PageAddContainer}/>
-                    <Route exact path="/admin/page/edit/:id"
-                           component={PageEditContainer}/>
-                    <Route exact path="/admin/files"
-                           component={FileManagerContainer}/>
-                </NavigationBar>
-            </Switch>
+            isDataLoad
+                ? (
+                    <div className="fullHeight">
+                        <Switch>
+                            <Route exact path="/admin"
+                                   render={() => (isAuthenticated ? (
+                                           <Redirect to={"/admin/dashboard"}/>
+                                       ) : <Redirect to={"/admin/login"}/>
+                                   )}
+                            />
+
+                            <Route exact path="/admin/login"
+                                   render={() => (
+                                       isAuthenticated ? (<Redirect to={"/admin/dashboard"}/>)
+                                           : (<LoginContainer/>)
+                                   )}/>
+
+
+                            <Route exact path="/admin/logout"
+                                   component={LogoutContainer}/>
+
+                            <PrivateRoute isAuth={isAuthenticated}
+                                          component={AdminDashboardRouter}/>
+
+
+                        </Switch>
+                    </div>
+                ) : null
         )
     };
 
 
 }
 
-export default AdminSiteRouter;
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.security.isAuthenticated,
+    }
+};
+
+export default connect(mapStateToProps, {checkAuth})(AdminSiteRouter);

@@ -7,9 +7,7 @@ export const checkAuth = () => dispatch => {
     axios.get('/api/auth/check')
         .then(response => response.data)
         .then(data => {
-            console.log(data);
             const code = data.code;
-
             dispatch({
                 type: CHECK_AUTHENTICATION,
                 payload: code === 200

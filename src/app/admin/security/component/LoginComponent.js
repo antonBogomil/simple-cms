@@ -13,7 +13,6 @@ import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 
-import axios from 'axios';
 
 import Style from '../style/LoginComponentStyle';
 

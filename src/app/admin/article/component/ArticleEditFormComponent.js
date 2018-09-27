@@ -23,7 +23,8 @@ class ArticleEditFormComponent extends Component {
         this.state = {
             article: {},
             joditConfig: {
-                height: '350'
+                height: '350',
+                iframe: true
             },
         };
     }

@@ -63,7 +63,9 @@ class ArticleAddFormComponent extends Component {
             body: '',
             page: null,
             joditConfig: {
-                height: '350'
+                height: '350',
+                iframe: true,
+                fontSize: '25px'
             },
         };
     }
