@@ -1,3 +1,7 @@
+import React, {Component} from "react";
+import {Link} from 'react-router-dom';
+import {withStyles} from '@material-ui/core/styles';
+
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -5,7 +9,6 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import ListIcon from '@material-ui/icons/List'
 import AddIcon from '@material-ui/icons/Add';
 import PageIcon from '@material-ui/icons/Pages';
-import {Link} from 'react-router-dom';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -15,43 +18,63 @@ import PageViewIcon from '@material-ui/icons/Pageview';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import PermMediaIcon from '@material-ui/icons/PermMedia';
 
-import React, {Component} from "react";
 
+const Style = theme => ({
+    active: {
+        color: '#3f51b5'
+    },
+
+});
 
 class MenuData extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            pageOpen: false,
-            articleOpen: false
+            active: '',
+            open: false
         };
     }
 
-    handleClickPageMenu = () => {
-        this.setState(state => ({pageOpen: !state.pageOpen}));
+    handleActiveMenu = (event, menuItem) => {
+        const {active} = this.state;
+        const isClose = active === menuItem;
+
+        this.setState({
+            active: menuItem,
+            open: !isClose
+        });
     };
 
-    handleClickArticleMenu = () => {
-        this.setState(state => ({articleOpen: !state.articleOpen}));
-    };
 
     render() {
-        const {pageOpen} = this.state;
-        const {articleOpen} = this.state;
+        const {classes} = this.props;
+        const {active} = this.state;
+        const {open} = this.state;
 
         return (
             <div>
-                <ListItem button onClick={this.handleClickPageMenu}>
-                    <ListItemIcon>
-                        <PageIcon style={pageOpen ? {color: '#3f51b5'} : null}/>
+                <ListItem button
+                          onClick={event => this.handleActiveMenu(event, 'pages')}>
+
+                    <ListItemIcon className={active === 'pages' ? classes.active : null}>
+
+                        <PageIcon/>
                     </ListItemIcon>
                     <ListItemText primary="Pages"/>
-                    {pageOpen ? <ExpandLess/> : <ExpandMore/>}
+                    {active === 'pages' && open ? <ExpandLess/> : <ExpandMore/>}
                 </ListItem>
-                <Collapse in={pageOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <ListItem button component={Link} to={"/admin/page"}>
+
+                <Collapse in={active === 'pages' && open}
+                          timeout="auto"
+                          unmountOnExit>
+
+                    <List component="div"
+                          disablePadding>
+
+                        <ListItem button
+                                  component={Link}
+                                  to={"/admin/page"}>
                             <ListItemIcon>
                                 <ListIcon/>
                             </ListItemIcon>
@@ -67,16 +90,27 @@ class MenuData extends Component {
                 </Collapse>
 
 
-                <ListItem button onClick={this.handleClickArticleMenu}>
-                    <ListItemIcon>
-                        <InboxIcon style={articleOpen ? {color: '#3f51b5'} : null}/>
+                <ListItem button
+                          onClick={event => this.handleActiveMenu(event, 'articles')}>
+
+                    <ListItemIcon className={active === 'articles' ? classes.active : null}>
+                        <InboxIcon/>
                     </ListItemIcon>
+
                     <ListItemText primary="Articles"/>
-                    {articleOpen ? <ExpandLess/> : <ExpandMore/>}
+                    {active === 'articles' && open ? <ExpandLess/> : <ExpandMore/>}
                 </ListItem>
-                <Collapse in={articleOpen} timeout="auto" unmountOnExit>
-                    <List>
-                        <ListItem button component={Link} to={"/admin/article"}>
+
+                <Collapse in={active === 'articles' && open}
+                          timeout="auto"
+                          unmountOnExit>
+
+                    <List component="div"
+                          disablePadding>
+
+                        <ListItem button
+                                  component={Link}
+                                  to={"/admin/article"}>
                             <ListItemIcon>
                                 <ListIcon/>
                             </ListItemIcon>
@@ -91,8 +125,12 @@ class MenuData extends Component {
                     </List>
                 </Collapse>
 
-                <ListItem button component={Link} to={"/admin/files"}>
-                    <ListItemIcon>
+
+                <ListItem button
+                          component={Link} to={"/admin/files"}
+                          onClick={event => this.handleActiveMenu(event, 'files')}>
+
+                    <ListItemIcon className={active === 'files' ? classes.active : null}>
                         <PermMediaIcon/>
                     </ListItemIcon>
                     <ListItemText primary="File manager"/>
@@ -107,11 +145,15 @@ class MenuData extends Component {
 
                 <Divider/>
 
-                <ListItem button component={Link} to={"/admin/logout"}>
-                    <ListItemIcon>
+                <ListItem button
+                          component={Link} to={"/admin/logout"}
+                          onClick={event => this.handleActiveMenu(event, 'logout')}>
+
+                    <ListItemIcon className={active === 'logout' ? classes.active : null}>
                         <ExitIcon/>
                     </ListItemIcon>
                     <ListItemText primary="Logout"/>
+
                 </ListItem>
 
             </div>)
@@ -119,5 +161,5 @@ class MenuData extends Component {
 
 }
 
-export default MenuData;
+export default withStyles(Style)(MenuData);
 
