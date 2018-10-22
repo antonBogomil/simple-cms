@@ -17,6 +17,8 @@ import Divider from '@material-ui/core/Divider';
 import PageViewIcon from '@material-ui/icons/Pageview';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import PermMediaIcon from '@material-ui/icons/PermMedia';
+import BuilderIcon from '@material-ui/icons/Build';
+import SiteComponentsNestedMenu from "./SiteComponentsNestedMenu";
 
 
 const Style = theme => ({
@@ -38,10 +40,11 @@ class MenuData extends Component {
 
     handleActiveMenu = (event, menuItem) => {
         const {active} = this.state;
-        const isClose = active === menuItem;
+        const {open} = this.state;
+        const isClose = active === menuItem && open;
 
         this.setState({
-            active: menuItem,
+            active: isClose ? null : menuItem,
             open: !isClose
         });
     };
@@ -91,37 +94,25 @@ class MenuData extends Component {
 
 
                 <ListItem button
-                          onClick={event => this.handleActiveMenu(event, 'articles')}>
+                          onClick={event => this.handleActiveMenu(event, 'components')}>
 
-                    <ListItemIcon className={active === 'articles' ? classes.active : null}>
-                        <InboxIcon/>
+                    <ListItemIcon className={active === 'components' ? classes.active : null}>
+                        <BuilderIcon/>
                     </ListItemIcon>
 
-                    <ListItemText primary="Articles"/>
-                    {active === 'articles' && open ? <ExpandLess/> : <ExpandMore/>}
+                    <ListItemText primary="Site builder"/>
+                    {active === 'components' && open ? <ExpandLess/> : <ExpandMore/>}
                 </ListItem>
 
-                <Collapse in={active === 'articles' && open}
+                <Collapse in={active === 'components' && open}
                           timeout="auto"
                           unmountOnExit>
 
                     <List component="div"
                           disablePadding>
 
-                        <ListItem button
-                                  component={Link}
-                                  to={"/admin/article"}>
-                            <ListItemIcon>
-                                <ListIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Articles list"/>
-                        </ListItem>
-                        <ListItem button component={Link} to={"/admin/article/add"}>
-                            <ListItemIcon>
-                                <AddIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Add article"/>
-                        </ListItem>
+                        <SiteComponentsNestedMenu/>
+
                     </List>
                 </Collapse>
 

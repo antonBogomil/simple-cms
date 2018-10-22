@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {connect} from 'react-redux';
 import {createPage} from '../action/pageActions'
 import PageAddFormComponent from "../component/PageAddFormComponent";
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 
 
 class PageAddContainer extends Component {

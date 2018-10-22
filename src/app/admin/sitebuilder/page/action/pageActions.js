@@ -1,6 +1,6 @@
 import {FETCH_PAGES, CREATE_PAGE, DELETE_PAGE, UPDATE_PAGE, GET_PAGE} from "./types";
 import axios from 'axios';
-import {openWindowDispatch} from "../../../actions/info/types";
+import {openWindowDispatch} from "../../../../actions/info/types";
 
 
 export const fetchPages = () => dispatch => {

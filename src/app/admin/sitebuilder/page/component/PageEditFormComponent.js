@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import ContentComponent from "../../ContentComponent";
+import ContentComponent from "../../../ContentComponent";
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
@@ -14,8 +14,9 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Style from '../style/EditPageComponentStyle';
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 
+import {resolveComponentName} from "../../utils/ComponentResolver";
 
 class PageEditFormComponent extends Component {
     constructor(props) {
@@ -48,11 +49,11 @@ class PageEditFormComponent extends Component {
         this.setState({page: page});
     };
 
-    handleDeleteArticleFromPage = (event, article) => {
+    handleDeleteComponentFromPage = (event, component) => {
         const {page} = this.state;
-        const index = page.articles.indexOf(article);
+        const index = page.components.indexOf(component);
 
-        page.articles.splice(index, 1);
+        page.components.splice(index, 1);
         this.setState({page: page});
     };
 
@@ -61,7 +62,6 @@ class PageEditFormComponent extends Component {
         page.isMainPage = event.target.checked;
         this.setState({page: page});
     };
-
 
     componentWillReceiveProps = nextProps => {
         if (nextProps.page) {
@@ -74,7 +74,9 @@ class PageEditFormComponent extends Component {
 
     render() {
         const {classes} = this.props;
+
         const {responseMessage, openInfoDialog} = this.state;
+
         const {page} = this.state;
         const {isDataLoad} = this.state;
 
@@ -130,8 +132,10 @@ class PageEditFormComponent extends Component {
                                 </FormControl>
 
                                 <FormControl fullWidth>
-                                    <InputLabel shrink htmlFor="url">Page
-                                        url {!page.isMainPage ? '*' : null}</InputLabel>
+                                    <InputLabel shrink htmlFor="url">
+                                        Page url {!page.isMainPage ? '*' : null}
+                                        </InputLabel>
+
                                     <TextField placeholder={urlPlaceholder}
                                                fullWidth
                                                style={{marginTop: '16px'}}
@@ -177,19 +181,19 @@ class PageEditFormComponent extends Component {
 
 
                                 <FormControl style={{width: '50%'}}>
-                                    <Typography variant="caption">Page Articles</Typography>
+                                    <Typography variant="caption">Page components</Typography>
                                     <Grid item xs={12} className={classes.chipsContainer}>
-                                        {page.articles.length !== 0 ? (
-                                            page.articles.map(article => {
+                                        {page.components.length !== 0 ? (
+                                            page.components.map(component => {
                                                 return (
                                                     <Chip className={classes.chip}
-                                                          key={article.id}
-                                                          label={article.title}
-                                                          onDelete={event => this.handleDeleteArticleFromPage(event, article)}
+                                                          key={component.id}
+                                                          label={resolveComponentName(component)}
+                                                          onDelete={event => this.handleDeleteComponentFromPage(event, component)}
                                                     />
                                                 )
                                             })
-                                        ) : 'No articles yet'}
+                                        ) : 'No components yet'}
                                     </Grid>
                                 </FormControl>
 

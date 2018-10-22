@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import ArticleAddFormComponent from "../component/ArticleAddFormComponent";
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 
 import {connect} from 'react-redux';
 import {createArticle} from "../action/articleActions";
 import {fetchPages} from "../../page/action/pageActions";
-import AlertDialogComponent from "../../utils/AlertDialogComponent";
+import AlertDialogComponent from "../../../utils/AlertDialogComponent";
 
 class ArticleAddContainer extends Component {
 

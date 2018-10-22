@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import ContentComponent from "../../ContentComponent";
+import ContentComponent from "../../../ContentComponent";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -20,6 +20,7 @@ import Select from '@material-ui/core/Select';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 
+import {resolveEditUrl, resolveComponentName} from "../../utils/ComponentResolver";
 
 import classNames from 'classnames';
 
@@ -71,31 +72,31 @@ class PageTableToolbar extends Component {
 
 PageTableToolbar = withStyles(Style)(PageTableToolbar);
 
-class PageArticlesExpansionPanelComponent extends Component {
+class PageComponentsExpansionPanelComponent extends Component {
 
     render() {
-        const {articles} = this.props;
+        const {components} = this.props;
 
         return (
             <div style={{width: '100%'}}>
-                {articles === undefined || articles.length === 0 ? "No articles yet" : (
+                {components === undefined || components.length === 0 ? "No components yet" : (
                     <Select value={-1}>
                         <MenuItem value="" disabled>
-                            Choose an article
+                            Choose an component
                         </MenuItem>
-                        {articles.map(article => {
+                        {components.map(component => {
                             return (<MenuItem
-                                value={article.id}
-                                key={article.id}
+                                value={component.id}
+                                key={component.id}
                                 component={Link}
                                 to={{
-                                    pathname: "/admin/article/edit/" + article.id,
+                                    pathname: resolveEditUrl(component),
                                     state: {
-                                        articlesOrder: articles.map(a => a.orderNumber)
+                                        componentsOrder: components.map(a => a.orderNumber)
                                     }
                                 }}
                             >
-                                {article.title}
+                                {resolveComponentName(component)}
                             </MenuItem>)
                         })}
                     </Select>
@@ -126,7 +127,7 @@ class PageTableHead extends Component {
                     <TableCell>Meta Keywords</TableCell>
                     <TableCell>Url link</TableCell>
                     <TableCell>Is main page</TableCell>
-                    <TableCell>Articles</TableCell>
+                    <TableCell>Components</TableCell>
                     <TableCell>Create Date</TableCell>
                     <TableCell>Edit</TableCell>
                 </TableRow>
@@ -195,7 +196,7 @@ class PageTableItem extends Component {
                 </TableCell>
                 <TableCell>{page.isMainPage ? "Yes" : "No"}</TableCell>
                 <TableCell>
-                    <PageArticlesExpansionPanelComponent articles={page.articles}/>
+                    <PageComponentsExpansionPanelComponent components={page.components}/>
                 </TableCell>
                 <TableCell>{page.createDate}</TableCell>
                 <TableCell>

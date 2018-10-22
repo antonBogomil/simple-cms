@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import {Route, Switch} from "react-router";
 
-import ArticleListContainer from "../article/container/ArticleListContainer";
-import ArticleAddContainer from "../article/container/ArticleAddContainer";
-import ArticleEditContainer from "../article/container/ArticleEditContainer";
-import PageListContainer from "../page/container/PageListContainer";
-import PageAddContainer from "../page/container/PageAddContainer";
-import PageEditContainer from "../page/container/PageEditContainer";
+import ArticleListContainer from "../sitebuilder/article/container/ArticleListContainer";
+import ArticleAddContainer from "../sitebuilder/article/container/ArticleAddContainer";
+import ArticleEditContainer from "../sitebuilder/article/container/ArticleEditContainer";
+import PageListContainer from "../sitebuilder/page/container/PageListContainer";
+import PageAddContainer from "../sitebuilder/page/container/PageAddContainer";
+import PageEditContainer from "../sitebuilder/page/container/PageEditContainer";
 import FileManagerContainer from "../file/container/FileManagerContainer";
 import NavigationBar from "../navigaion/component/NavigationBar";
 

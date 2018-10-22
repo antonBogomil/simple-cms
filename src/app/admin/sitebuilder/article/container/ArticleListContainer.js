@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import ArticleListComponent from "../component/ArticleListComponent";
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 
 import {connect} from 'react-redux';
 import {fetchArticles, deleteArticles} from "../action/articleActions";

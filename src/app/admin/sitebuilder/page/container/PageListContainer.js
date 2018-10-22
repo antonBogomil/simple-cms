@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {deletePage, fetchPages} from "../action/pageActions";
 import PageListComponent from "../component/PageListComponent";
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 
 class PageListContainer extends Component {
     constructor(props) {

@@ -41,6 +41,7 @@ export default function (state = initState, action) {
             }
         }
 
+        //TODO: after creating article it must add to parent page components
         case CREATE_ARTICLE: {
             const article = action.payload;
             return {

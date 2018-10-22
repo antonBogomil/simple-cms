@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import ContentComponent from "../../ContentComponent";
+import ContentComponent from "../../../ContentComponent";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";

@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import {updateArticle, getArticle} from '../action/articleActions';
 import {fetchPages} from "../../page/action/pageActions";
-import InfoWindow from "../../utils/InfoWindow";
+import InfoWindow from "../../../utils/InfoWindow";
 import ArticleEditFormComponent from "../component/ArticleEditFormComponent";
 
 class ArticleEditContainer extends Component {
@@ -41,14 +41,14 @@ class ArticleEditContainer extends Component {
     }
 
     componentWillReceiveProps = nextProps => {
-        if (nextProps.location.state.article || nextProps.page) {
+        if ((nextProps.location.state.article || nextProps.article)|| nextProps.pages) {
             this.setState({isDataLoad: true});
         }
 
     };
 
     render() {
-        const {articlesOrder} = this.props.location.state;
+        const {componentsOrder} = this.props.location.state;
 
         const {article} = this.props;
         const {pages} = this.props;
@@ -59,14 +59,13 @@ class ArticleEditContainer extends Component {
 
         const {isDataLoad} = this.state;
 
-
+        //TODO: make article get order not only from pages list state
         return (
-
             isDataLoad ? (
                 <div>
                     <ArticleEditFormComponent pages={pages}
                                               article={article}
-                                              order={articlesOrder}
+                                              order={componentsOrder}
                                               onUpdate={this.handleUpdateArticle}/>
                     {open ? (
                         <InfoWindow open={open}

@@ -1,5 +1,5 @@
-import {FETCH_ARTICLES, DELETE_ARTICLE, UPDATE_ARTICLE, GET_ARTICLE, CREATE_ARTICLE} from "../action/types";
-import {openWindowDispatch} from "../../../actions/info/types";
+import {FETCH_ARTICLES, DELETE_ARTICLE, UPDATE_ARTICLE, GET_ARTICLE, CREATE_ARTICLE} from "./types";
+import {openWindowDispatch} from "../../../../actions/info/types";
 
 import axios from "axios";
 
@@ -44,7 +44,6 @@ export const updateArticle = (article, id) => dispatch => {
         .then(response => response.data)
         .then(data => {
             const code = data.code;
-            console.log(data);
 
             if (code === 200) {
                 dispatch({
