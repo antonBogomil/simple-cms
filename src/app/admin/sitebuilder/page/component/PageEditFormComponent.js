@@ -9,12 +9,12 @@ import Divider from '@material-ui/core/Divider';
 import Style from '../style/EditPageComponentStyle';
 
 
-
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PageEditMainTabComponent from "./edit/tabs/PageEditMainTabComponent";
 import Button from "@material-ui/core/Button";
+import PageEditBuilderComponent from "./edit/tabs/PageEditBuilderComponent";
 
 class PageEditFormComponent extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class PageEditFormComponent extends Component {
         };
     }
 
-    handleChangeTab = (event, value) =>{
+    handleChangeTab = (event, value) => {
         this.setState({selectedTab: value});
     };
 
@@ -47,9 +47,9 @@ class PageEditFormComponent extends Component {
     handleEditPage = (event, propName) => {
         const {page} = this.state;
 
-        if(propName === 'isMainPage'){
+        if (propName === 'isMainPage') {
             page[propName] = event.target.checked;
-        }else{
+        } else {
             page[propName] = event.target.value;
         }
 
@@ -75,7 +75,7 @@ class PageEditFormComponent extends Component {
 
     render() {
         const {classes} = this.props;
-
+        const {components} = this.props;
 
         const {page} = this.state;
         const {isDataLoad} = this.state;
@@ -106,10 +106,9 @@ class PageEditFormComponent extends Component {
                                 </Tabs>
                             </AppBar>
 
-                            {
-                                selectedTab === 0 &&
-                                <PageEditMainTabComponent page={page} onEdit={this.handleEditPage}/>
-                            }
+                            {selectedTab === 0 && <PageEditMainTabComponent page={page} onEdit={this.handleEditPage}/>}
+                            {selectedTab === 1 && <PageEditBuilderComponent page={page} components={components}/>}
+
 
                             <div className={classes.buttonContainer}>
                                 <Button variant="contained"
