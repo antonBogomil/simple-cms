@@ -21,6 +21,11 @@ const style = theme => ({
 
     marginDiv: {
         marginBottom: "25px"
+    },
+
+    hostNameAdornment: {
+        marginRight: '0px',
+        color: 'rgb(169, 169, 169);'
     }
 
 });

@@ -89,26 +89,22 @@ class ArticleTableItem extends Component {
                 <TableCell>{article.title}</TableCell>
                 <TableCell>{article.createDate}</TableCell>
 
+
                 <TableCell>
-                    {article.page ? (
-                        <Typography
-                            component={Link}
-                            to={'/admin/page/edit/' + article.page.id}
-                        >
-                            {article.page.title}
-                        </Typography>
-                    ) : 'No parent page yet'}
+                    No parent pages yet
+                    {/*{article.pages ? (*/}
+                        {/*<Typography*/}
+                            {/*component={Link}*/}
+                            {/*to={'/admin/page/edit/' + article.page.id}*/}
+                        {/*>*/}
+                            {/*{article.page.title}*/}
+                        {/*</Typography>*/}
+                    {/*) : 'No parent pages yet'}*/}
                 </TableCell>
 
-                <TableCell>{article.orderNumber}</TableCell>
 
                 <TableCell>
-                    <IconButton component={Link} to={{
-                        pathname: "/admin/article/edit/" + article.id,
-                        state: {
-                            articlesOrder: articles.map(a => a.orderNumber)
-                        }
-                    }}>
+                    <IconButton component={Link} to={"/admin/article/edit/" + article.id}>
                         <EditIcon/>
                     </IconButton>
                 </TableCell>
@@ -136,7 +132,6 @@ class ArticleTableHead extends Component {
                     <TableCell>Title</TableCell>
                     <TableCell>Create Date</TableCell>
                     <TableCell>Parent page</TableCell>
-                    <TableCell>Order</TableCell>
                     <TableCell>Edit</TableCell>
                 </TableRow>
             </TableHead>

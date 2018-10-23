@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import {editPage, getPage} from '../action/pageActions';
 import PageEditFormComponent from "../component/PageEditFormComponent";
+import InfoWindow from "../../../utils/InfoWindow";
 
 class PageEditContainer extends Component {
 
@@ -13,7 +14,7 @@ class PageEditContainer extends Component {
         formData.set('metaKeywords', page.metaKeywords);
         formData.set('metaDescription', page.metaDescription);
         formData.set('isMainPage', page.isMainPage);
-        formData.set('articles', page.articles.map(a => a.id));
+        formData.set('components', page.components.map(a => a.id));
 
 
         this.props.editPage(formData, id);
@@ -28,9 +29,18 @@ class PageEditContainer extends Component {
     render() {
         const {page} = this.props;
 
+        const {open} = this.props;
+        const {message} = this.props;
+
         return (
-            <PageEditFormComponent page={page}
-                                   onPageUpdate={this.handleUpdatePage}/>
+            <div>
+                <PageEditFormComponent page={page}
+                                       onPageUpdate={this.handleUpdatePage}/>
+
+                {open ? <InfoWindow open={open} message={message}/> : null}
+
+            </div>
+
         )
     }
 
@@ -38,7 +48,10 @@ class PageEditContainer extends Component {
 
 const mapStateToProps = state => {
     return {
-        page: state.pages.page
+        page: state.pages.page,
+
+        open: state.info.open,
+        message: state.info.message
     }
 };
 

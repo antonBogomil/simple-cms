@@ -29,10 +29,7 @@ class PageAddContainer extends Component {
 
                 <PageAddFormComponent onPageCreate={this.handleCreatePage}/>
 
-                {open ? (
-                    <InfoWindow open={open}
-                                message={message}/>
-                ) : null}
+                {open ? <InfoWindow open={open} message={message}/> : null}
             </div>
 
 

@@ -4,7 +4,7 @@ const style = theme => ({
     },
 
     formStyle: {
-        paddingTop: '30px',
+        paddingTop: '5px',
         width: '100%',
     },
 
@@ -32,6 +32,10 @@ const style = theme => ({
         margin: theme.spacing.unit / 2,
     },
 
+    hostNameAdornment: {
+        marginRight: '0px',
+        color: 'rgb(169, 169, 169);'
+    }
 
 });
 

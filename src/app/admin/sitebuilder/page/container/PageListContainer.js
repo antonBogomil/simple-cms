@@ -14,7 +14,6 @@ class PageListContainer extends Component {
             selected: [],
             isSelectAll: false,
             numSelected: 0,
-            responseMessage: '',
             isDataLoad: false
         };
     }
@@ -24,11 +23,13 @@ class PageListContainer extends Component {
         const {pages} = this.props;
 
         if (!isSelectAll) {
+
             this.setState({
                 isSelectAll: true,
                 selected: pages.map(n => n.id),
                 numSelected: pages.length
             });
+
         } else {
             this.setState({
                 isSelectAll: false,
@@ -78,7 +79,6 @@ class PageListContainer extends Component {
             numSelected: 0,
             selected: [],
             isSelectAll: false,
-            responseMessage: selected.length + " page(s) was deleted successfully"
         })
     };
 
@@ -108,6 +108,7 @@ class PageListContainer extends Component {
 
         const {open} = this.props;
         const {message} = this.props;
+
         return (
             isDataLoad ? (
                 <div>

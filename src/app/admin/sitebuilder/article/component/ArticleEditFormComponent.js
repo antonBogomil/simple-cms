@@ -61,9 +61,6 @@ class ArticleEditFormComponent extends Component {
     render() {
         const {classes} = this.props;
 
-        const {pages} = this.props;
-        const {order} = this.props;
-
         const {joditConfig} = this.state;
         const {article} = this.state;
 
@@ -96,50 +93,7 @@ class ArticleEditFormComponent extends Component {
                                 />
                             </FormControl>
 
-                            <FormControl className={classes.formControl}>
-                                <InputLabel htmlFor="orederNumber">Order nubmer</InputLabel>
-                                <Select
-                                    required
-                                    native
-                                    value={article.orderNumber}
-                                    onChange={event => this.handleChangeArticle(event, 'orderNumber')}
-                                    id='orederNumber'
-                                >
-                                    <option value=""/>
 
-                                    {order !== undefined ? (
-                                        order.map(order => {
-                                            return (<option key={order} value={order}>{order}</option>)
-                                        })
-                                    ) : ''}
-
-                                </Select>
-                            </FormControl>
-
-                            <FormControl className={classes.formControl}>
-                                <InputLabel shrink htmlFor="ownerPage">Owner Page</InputLabel>
-                                <Select
-                                    native
-                                    onChange={event => this.handleChangeArticle(event, 'page')}
-                                    inputProps={{
-                                        id: 'ownerPage',
-                                        name: 'page'
-                                    }}>
-
-                                    {article.page ? (
-                                        <option key={article.page.id}
-                                                value={pages.indexOf(article.page)}>{article.page.title}</option>
-                                    ) : <option value=""/>}
-
-                                    {pages.map((page, index) => {
-                                        return (
-                                            article.page && article.page.id === page.id ? null
-                                                : (<option key={page.id} value={index}>{page.title}</option>)
-                                        )
-                                    })
-                                    }
-                                </Select>
-                            </FormControl>
                         </div>
 
                         <div className={classes.articleBodyStyle}>
@@ -176,7 +130,6 @@ ArticleEditFormComponent.propType = {
     classes: PropType.object.isRequired,
     navigation: PropType.string.isRequired,
 
-    pages: PropType.array.isRequired,
     article: PropType.object.isRequired,
 
     onUpdate: PropType.func.isRequired
