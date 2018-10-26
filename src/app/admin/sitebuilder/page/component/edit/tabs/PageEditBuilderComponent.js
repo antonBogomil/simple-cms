@@ -14,6 +14,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import DropArea from "../dnd/DropArea";
 import DragItem from "../dnd/DragItem";
+import * as ReactDOM from "react-dom";
 
 // Set constant HEIGHT of view drop block.
 const dropItemHeight = 70;
@@ -33,7 +34,7 @@ const Style = theme => ({
         borderRadius: '5px',
         overflow: 'auto',
         maxHeight: '600px',
-        flexGrow: '3'
+        flexGrow: '3',
     },
 
     info: {
@@ -60,16 +61,14 @@ const Style = theme => ({
         margin: 'auto',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
 
-    components: {
-        transition: 'transform 400ms'
-    }
+
 });
 
 class ComponentItemView extends Component {
@@ -108,7 +107,8 @@ class ComponentItemView extends Component {
                                               type='component'
                                               data={c}
                                               draggable={true}
-                                              dragOnly={true}>
+                                              dragOnly={true}
+                                              onDragOver={undefined}>
 
                                         <ListItem button className={classes.nested}>
                                             <ListItemText inset primary={c.title}/>
@@ -164,26 +164,27 @@ class PageEditBuilderComponent extends Component {
 
         this.state = {
             pageComponents: [],
-            newComponentIndex: -1,
-            isPlaceholderInsert: false
+            insertIndex: -1,
+            yPosition: 0
         }
     }
 
     handleAreaOnDropComponent = (event, data) => {
         const {pageComponents} = this.state;
 
-        const {newComponentIndex} = this.state;
+        const {insertIndex} = this.state;
 
 
-        if (newComponentIndex === -1) {
+        if (insertIndex === -1) {
             pageComponents.push(data);
         } else {
-            pageComponents.splice(newComponentIndex, 0, data);
+            pageComponents.splice(insertIndex, 0, data);
         }
 
         this.setState({
             pageComponents: pageComponents,
-            newComponentIndex: -1,
+            insertIndex: -1,
+            yPosition: 0
         });
     };
 
@@ -191,8 +192,31 @@ class PageEditBuilderComponent extends Component {
 
     };
 
-    handleItemOnDragOver = (event, params, index) => {
-        this.setState({newComponentIndex: index});
+
+    handleItemOnDragOver = event => {
+        const targetNode = ReactDOM.findDOMNode(event.target);
+
+        const offset = targetNode.offsetTop;
+
+        const currentBlockHeight = event.target.clientHeight;
+        const itemPosition = event.pageY - offset - currentBlockHeight;
+
+        const yTranslition = this.resolveTranslation(itemPosition, currentBlockHeight);
+        this.setState({yPosition: yTranslition});
+
+        if (targetNode.hasAttribute("index")) {
+            const index = parseInt(targetNode.getAttribute("index"));
+            let realIndex = yTranslition === 0 ? Math.abs(index + 1) : index;
+            this.setState({insertIndex: realIndex});
+        }
+
+    };
+
+
+    resolveTranslation = (itemPosition, targetHeight) => {
+        const halfBlockHeight = targetHeight / 2;
+        console.log(itemPosition);
+        return itemPosition < halfBlockHeight ? targetHeight : 0;
     };
 
 
@@ -202,6 +226,8 @@ class PageEditBuilderComponent extends Component {
 
         const {pageComponents} = this.state;
 
+        const {insertIndex} = this.state;
+        const {yPosition} = this.state;
         return (
             <Grid container className={classes.builderContainer}>
                 <Grid item xs={2} className={classes.componentsContainer}>
@@ -224,16 +250,19 @@ class PageEditBuilderComponent extends Component {
                     ) : (
                         pageComponents.map((c, index) => {
                             return (
-                                    <DragItem key={c.id + index + new Date() + c.createDate}
-                                              index={index}
-                                              className={classes.componentViewBlock}
-                                              draggable={false}
-                                              onDragOver={this.handleItemOnDragOver}>
+                                <DragItem key={c.id + index + new Date() + c.createDate}
+                                          index={index}
+                                          className={classes.componentViewBlock}
+                                          draggable={false}
+                                          onDragOver={this.handleItemOnDragOver}
+                                          style={index >= insertIndex ?
+                                              yPosition ? {transform: `translate3d(0, ${yPosition}px, 0)`} : null
+                                          : null}>
 
-                                        <Typography variant="headline" className={classes.componentMeta}>
-                                            {c.title}
-                                        </Typography>
-                                    </DragItem>
+                                    <Typography variant="headline" className={classes.componentMeta}>
+                                        {c.title}
+                                    </Typography>
+                                </DragItem>
                             )
                         })
                     )}

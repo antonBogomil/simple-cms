@@ -11,16 +11,15 @@ class DropArea extends Component {
         }
     }
 
-    handleDragOver = event => {
+    handleOnDragOver = event => {
         event.preventDefault();
 
         const {topOffset} = this.state;
 
 
-
         const {onDragOver} = this.props;
 
-        if(onDragOver !== undefined){
+        if (onDragOver !== undefined) {
             onDragOver(event, topOffset);
         }
     };
@@ -31,8 +30,8 @@ class DropArea extends Component {
         // Cannot read data, so dragabble object invalid
         try {
             data = JSON.parse(event.dataTransfer.getData("data"));
-        }catch (e) {
-           return;
+        } catch (e) {
+            return;
         }
 
         const {type} = this.props;
@@ -42,6 +41,13 @@ class DropArea extends Component {
 
     };
 
+    handleOnDragLeave = event => {
+      const {onDragLeave} = this.props;
+
+      if(onDragLeave !== undefined){
+          onDragLeave(event);
+      }
+    };
 
     componentDidMount = () => {
         const node = ReactDOM.findDOMNode(this);
@@ -55,8 +61,10 @@ class DropArea extends Component {
 
         return (
             <div onDrop={this.handleOnDrop}
-                 onDragOver={this.handleDragOver}
+                 onDragOver={this.handleOnDragOver}
+                 onDragLeave={this.handleOnDragLeave}
                  className={className}>
+
                 {children}
             </div>
         );
