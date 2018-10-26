@@ -17,7 +17,7 @@ import DragItem from "../dnd/DragItem";
 import * as ReactDOM from "react-dom";
 
 // Set constant HEIGHT of view drop block.
-const dropItemHeight = 70;
+const dropItemHeight = 80;
 
 const Style = theme => ({
     builderContainer: {
@@ -189,6 +189,10 @@ class PageEditBuilderComponent extends Component {
     };
 
     handleAreaOnDragOver = (event, offset) => {
+        // const currentBlockHeight = event.target.clientHeight;
+        const itemPosition = event.pageY - offset - event.target.children[0].clientHeight;
+        const yTranslition = this.resolveTranslation(itemPosition, dropItemHeight);
+        this.setState({yPosition: yTranslition});
 
     };
 
@@ -204,9 +208,10 @@ class PageEditBuilderComponent extends Component {
         const yTranslition = this.resolveTranslation(itemPosition, currentBlockHeight);
         this.setState({yPosition: yTranslition});
 
+        const {yPosition} = this.state;
         if (targetNode.hasAttribute("index")) {
             const index = parseInt(targetNode.getAttribute("index"));
-            let realIndex = yTranslition === 0 ? Math.abs(index + 1) : index;
+            let realIndex = yPosition === 0 ? Math.abs(index + 1) : index;
             this.setState({insertIndex: realIndex});
         }
 
@@ -215,7 +220,6 @@ class PageEditBuilderComponent extends Component {
 
     resolveTranslation = (itemPosition, targetHeight) => {
         const halfBlockHeight = targetHeight / 2;
-        console.log(itemPosition);
         return itemPosition < halfBlockHeight ? targetHeight : 0;
     };
 
@@ -257,7 +261,7 @@ class PageEditBuilderComponent extends Component {
                                           onDragOver={this.handleItemOnDragOver}
                                           style={index >= insertIndex ?
                                               yPosition ? {transform: `translate3d(0, ${yPosition}px, 0)`} : null
-                                          : null}>
+                                              : null}>
 
                                     <Typography variant="headline" className={classes.componentMeta}>
                                         {c.title}
