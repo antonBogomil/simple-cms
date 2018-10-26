@@ -16,8 +16,13 @@ class DropArea extends Component {
 
         const {topOffset} = this.state;
 
+
+
         const {onDragOver} = this.props;
-        onDragOver(event, topOffset);
+
+        if(onDragOver !== undefined){
+            onDragOver(event, topOffset);
+        }
     };
 
     handleOnDrop = event => {

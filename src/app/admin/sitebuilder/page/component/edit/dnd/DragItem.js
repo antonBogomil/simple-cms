@@ -7,7 +7,8 @@ class DragItem extends Component {
         super(props);
 
         this.state = {
-            yPosition: 0
+            yPosition: 0,
+            areaIndex: -1
         }
 
     }
@@ -23,56 +24,71 @@ class DragItem extends Component {
 
         event.dataTransfer.setData("data", JSON.stringify(transferData));
 
+
         const {onDragStart} = this.props;
-        onDragStart(event);
+
+        if (onDragStart !== undefined) {
+            onDragStart(event);
+        }
     };
 
     handleOnDragOver = (event, params) => {
         event.preventDefault();
 
-        event.preventDefault();
+        const {dragOnly} = this.props;
 
-        const offset = ReactDOM.findDOMNode(event.target).offsetTop;
-        const currentBlockHeight = event.target.clientHeight;
-        const itemPosition = event.pageY - offset - currentBlockHeight;
+        if (dragOnly === undefined || !dragOnly) {
 
-        console.log(offset - currentBlockHeight);
+            const targetNode = ReactDOM.findDOMNode(event.target);
 
-        const yTranslition = this.resolveTranslation(itemPosition, currentBlockHeight);
+            const offset = targetNode.offsetTop;
+
+            if (targetNode.hasAttribute("index")) {
+                const index = parseInt(targetNode.getAttribute("index"));
+                this.setState({areaIndex: index});
+
+            }
 
 
-        this.setState({yPosition: yTranslition});
-        //
-        //
-        // const {onDragOver} = this.props;
-        // if (onDragOver !== undefined) {
-        //     onDragOver(event, params);
-        // }
+            const currentBlockHeight = event.target.clientHeight;
+            const itemPosition = event.pageY - offset - currentBlockHeight;
 
+            const yTranslition = this.resolveTranslation(itemPosition, currentBlockHeight);
+            this.setState({yPosition: yTranslition});
+
+            const {onDragOver} = this.props;
+            if (onDragOver !== undefined) {
+                const {areaIndex} = this.state;
+
+                let realIndex = yTranslition === 0 ? Math.abs(areaIndex + 1) : areaIndex;
+                onDragOver(event, params, realIndex);
+            }
+
+        }
     };
 
     handleOnDragLeave = (event, params) => {
         const {onDragLeave} = this.props;
+
 
         if (onDragLeave !== undefined) {
             onDragLeave(event, params);
         }
     };
 
-    resolveTranslation = (itemPosition, targetHeight) => {
-        const halfBlockHeight = targetHeight / 2;
-        return itemPosition < halfBlockHeight ? targetHeight : 0
-    };
-
-
     handleOnDragEnd = (event, params) => {
         event.preventDefault();
 
         const {onDragEnd} = this.props;
-
         if (onDragEnd !== undefined) {
             onDragEnd(event, params);
         }
+    };
+
+
+    resolveTranslation = (itemPosition, targetHeight) => {
+        const halfBlockHeight = targetHeight / 2;
+        return itemPosition < halfBlockHeight ? targetHeight : 0
     };
 
     render() {
@@ -91,8 +107,10 @@ class DragItem extends Component {
                  draggable={draggable}
                  className={className}
                  style={yPosition ? {transform: `translate3d(0, ${yPosition}px, 0)`} : null}
-            >
+                 index={this.props.index}>
+
                 {children}
+
             </div>
         );
     }

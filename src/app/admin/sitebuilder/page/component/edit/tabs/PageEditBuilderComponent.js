@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import PropType from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import {connect} from 'react-redux';
-
-import {fetchArticles} from "../../../../article/action/articleActions";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
@@ -16,7 +13,6 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import DropArea from "../dnd/DropArea";
-import * as ReactDOM from "react-dom";
 import DragItem from "../dnd/DragItem";
 
 // Set constant HEIGHT of view drop block.
@@ -57,7 +53,7 @@ const Style = theme => ({
         margin: '5px',
         minHeight: dropItemHeight + 'px',
         backgroundColor: '#c6efef',
-        transition: 'transform 300ms'
+        transition: 'transform 400ms'
     },
 
     componentMeta: {
@@ -70,6 +66,10 @@ const Style = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+
+    components: {
+        transition: 'transform 400ms'
+    }
 });
 
 class ComponentItemView extends Component {
@@ -91,12 +91,10 @@ class ComponentItemView extends Component {
         const {components} = this.props;
         const {menuTitle} = this.props;
 
-        const {onDrag} = this.props;
-        const {onDragEnd} = this.props;
 
         const {open} = this.state;
         return (
-            <div style={{cursor: 'pointer'}}>
+            <div style={{cursor: 'pointer', overflow: 'auto'}}>
                 <ListItem onClick={this.handleClick}>
                     <ListItemText primary={menuTitle}/>
                     {open ? <ExpandLess/> : <ExpandMore/>}
@@ -110,8 +108,7 @@ class ComponentItemView extends Component {
                                               type='component'
                                               data={c}
                                               draggable={true}
-                                              onDragEnd={onDragEnd}
-                                              onDragStart={onDrag}>
+                                              dragOnly={true}>
 
                                         <ListItem button className={classes.nested}>
                                             <ListItemText inset primary={c.title}/>
@@ -136,9 +133,6 @@ class ComponentsListView extends Component {
     render() {
         const {components} = this.props;
 
-        const {onDrag} = this.props;
-        const {onDragEnd} = this.props;
-
         const types = [...new Set(components.map(c => c.type))];
 
         return (
@@ -152,9 +146,7 @@ class ComponentsListView extends Component {
                         return (
                             <ComponentItemView key={index}
                                                components={components.filter(c => c.type === type)}
-                                               menuTitle={type}
-                                               onDrag={onDrag}
-                                               onDragEnd={onDragEnd}/>
+                                               menuTitle={type}/>
                         )
                     })
                 }
@@ -172,57 +164,35 @@ class PageEditBuilderComponent extends Component {
 
         this.state = {
             pageComponents: [],
-            dropWindowOffset: null,
-            y: 0
-
+            newComponentIndex: -1,
+            isPlaceholderInsert: false
         }
     }
-
-
-    handleDragComponent = () => {
-    };
 
     handleAreaOnDropComponent = (event, data) => {
         const {pageComponents} = this.state;
 
-        pageComponents.push(data);
+        const {newComponentIndex} = this.state;
+
+
+        if (newComponentIndex === -1) {
+            pageComponents.push(data);
+        } else {
+            pageComponents.splice(newComponentIndex, 0, data);
+        }
 
         this.setState({
             pageComponents: pageComponents,
-            y: 0
+            newComponentIndex: -1,
         });
     };
 
-
     handleAreaOnDragOver = (event, offset) => {
-        const {dropWindowOffset} = this.state;
-        if (dropWindowOffset == null || dropWindowOffset !== offset) {
-            this.setState({dropWindowOffset: offset});
-        }
-    };
-
-
-    handleItemOnDragOver = (event, index) => {
-        // const offset = ReactDOM.findDOMNode(event.target).offsetTop;
-        // const currentBlockHeight = event.target.clientHeight;
-        // const itemPosition = event.pageY - offset - currentBlockHeight;
-        //
-        //
-        // const yTranslition = this.resolveTranslation(itemPosition, currentBlockHeight);
-        //
-        //
-        // console.log("Y: " + yTranslition);
-        // this.setState({y: yTranslition});
-
 
     };
 
-    handleOnDragLeave = () => {
-    };
-
-    resolveTranslation = (itemPosition, targetHeight) => {
-        const halfBlockHeight = targetHeight / 2;
-        return itemPosition < halfBlockHeight ? targetHeight : 0
+    handleItemOnDragOver = (event, params, index) => {
+        this.setState({newComponentIndex: index});
     };
 
 
@@ -235,14 +205,12 @@ class PageEditBuilderComponent extends Component {
         return (
             <Grid container className={classes.builderContainer}>
                 <Grid item xs={2} className={classes.componentsContainer}>
-                    <ComponentsListView components={components}
-                                        onDrag={this.handleDragComponent}
-                                        onDragEnd={this.clearPlaceholder}/>
+                    <ComponentsListView components={components}/>
                 </Grid>
 
                 <DropArea type='component'
-                          onDragOver={this.handleAreaOnDragOver}
                           onDrop={this.handleAreaOnDropComponent}
+                          onDragOver={this.handleAreaOnDragOver}
                           className={classes.pageContainer}>
 
                     {pageComponents.length === 0 ? (
@@ -256,19 +224,20 @@ class PageEditBuilderComponent extends Component {
                     ) : (
                         pageComponents.map((c, index) => {
                             return (
-                                <DragItem key={index}
-                                          className={classes.componentViewBlock}
-                                          onDragOver={e => this.handleItemOnDragOver(e, index)}
-                                          onDragLeave={this.handleOnDragLeave}
-                                          draggable={false}>
+                                    <DragItem key={c.id + index + new Date() + c.createDate}
+                                              index={index}
+                                              className={classes.componentViewBlock}
+                                              draggable={false}
+                                              onDragOver={this.handleItemOnDragOver}>
 
-                                    <Typography variant="headline" className={classes.componentMeta}>
-                                        {c.title}
-                                    </Typography>
-                                </DragItem>
+                                        <Typography variant="headline" className={classes.componentMeta}>
+                                            {c.title}
+                                        </Typography>
+                                    </DragItem>
                             )
                         })
                     )}
+
                 </DropArea>
 
 
@@ -283,14 +252,8 @@ PageEditBuilderComponent.propType = {
 
 };
 
-const mapStateToProps = state => {
-    return {
-        articles: state.articles.articles
-    }
-};
-
 
 PageEditBuilderComponent = withStyles(Style)(PageEditBuilderComponent);
-export default connect(mapStateToProps, {fetchArticles})(PageEditBuilderComponent);
+export default (PageEditBuilderComponent);
 
 
