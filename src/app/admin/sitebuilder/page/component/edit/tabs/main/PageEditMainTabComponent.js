@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
-import Style from '../../../style/EditPageComponentStyle';
+import Style from '../../../../style/EditPageComponentStyle';
 import InputAdornment from "@material-ui/core/InputAdornment/InputAdornment";
 
 class PageEditMainTabComponent extends Component {

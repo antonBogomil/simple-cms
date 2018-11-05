@@ -12,9 +12,9 @@ import Style from '../style/EditPageComponentStyle';
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import PageEditMainTabComponent from "./edit/tabs/PageEditMainTabComponent";
+import PageEditMainTabComponent from "./edit/tabs/main/PageEditMainTabComponent";
 import Button from "@material-ui/core/Button";
-import PageEditBuilderComponent from "./edit/tabs/PageEditBuilderComponent";
+import PageEditBuilderComponent from "./edit/tabs/builder/PageEditBuilderComponent";
 
 class PageEditFormComponent extends Component {
     constructor(props) {
@@ -80,7 +80,8 @@ class PageEditFormComponent extends Component {
         const {page} = this.state;
         const {isDataLoad} = this.state;
 
-        const {selectedTab} = this.state;
+        const selectedTab = 1;
+
         return (
             isDataLoad ? (
                 <ContentComponent navigation="Page / Edit">
@@ -101,7 +102,7 @@ class PageEditFormComponent extends Component {
 
                             <AppBar position={"static"}>
                                 <Tabs value={selectedTab} onChange={this.handleChangeTab}>
-                                    <Tab label={"Main configuration"}/>
+                                    <Tab   label={"Main configuration"}/>
                                     <Tab label={"Page builder"}/>
                                 </Tabs>
                             </AppBar>

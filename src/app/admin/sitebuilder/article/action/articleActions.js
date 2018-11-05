@@ -24,7 +24,6 @@ export const createArticle = article => dispatch => {
         .then(response => response.data)
         .then(data => {
             const code = data.code;
-
             if (code === 201) {
                 dispatch({
                     type: CREATE_ARTICLE,
