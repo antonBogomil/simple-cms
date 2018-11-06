@@ -48,10 +48,15 @@ const Style = theme => ({
 	},
 	listContainerPaper:{
 		minHeight: '60vh',
-		// overflowY: 'scroll'
 	},
 	selectedItems:{
 		padding: '0px'
+	},
+	buttonChangeOrder:{
+		margin: '5px'
+	},
+	buttonDelete:{
+		margin: '5px'
 	}
 
 

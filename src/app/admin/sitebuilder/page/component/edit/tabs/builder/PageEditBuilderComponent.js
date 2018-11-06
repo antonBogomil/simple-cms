@@ -6,9 +6,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Grid from "@material-ui/core/Grid";
 import Style from '../../../../style/PageEditBuilderComponentStyle';
 import ComponentsListView from "./ComponentListView";
-import Button from "@material-ui/core/es/Button/Button";
 
-import SvgIcon from '@material-ui/core/SvgIcon';
 import Paper from "@material-ui/core/es/Paper/Paper";
 import List from "@material-ui/core/es/List/List";
 import ListSubheader from "@material-ui/core/es/ListSubheader/ListSubheader";
@@ -35,15 +33,55 @@ class PageEditBuilderComponent extends Component {
 		this.setState({
 			pageComponents: newPageComponents
 		});
-		console.log(newComponent[0]);
 	};
 	removeComponent = (order) => {
 		const filteredPageComponents = this.state.pageComponents.slice(0);
-		filteredPageComponents.splice(order,1);
+		filteredPageComponents.splice(order, 1);
 		this.setState({
 			pageComponents: filteredPageComponents
 		});
-	}
+	};
+	changeComponentOrder = (type, id) => {
+		const newComponents = this.state.pageComponents.map((component) => {
+			return component
+		});
+
+		if (type === 'UP') {
+			if (id - 1 >= 0) {
+				let temp = newComponents[id - 1];
+				newComponents[id - 1] = newComponents[id];
+				newComponents[id] = temp;
+				const result = newComponents.filter((component) => {
+					return component !== undefined;
+				});
+				this.setState({
+					pageComponents: result
+				});
+			}
+			else {
+				return false
+			}
+
+		}
+		else if (type==='DOWN') {
+			if (id + 1 <= newComponents.length) {
+				let temp = newComponents[id + 1];
+				newComponents[id + 1] = newComponents[id];
+				newComponents[id] = temp;
+				const result = newComponents.filter((component) => {
+					return component !== undefined;
+				});
+				this.setState({
+					pageComponents: result
+				});
+
+			}
+			else {
+				return false
+			}
+		}
+	};
+
 
 	render() {
 		const {classes} = this.props;
@@ -66,12 +104,18 @@ class PageEditBuilderComponent extends Component {
 						      }>
 							{
 								pageComponents.map((c, index) => {
+									let moveUp = true;
+									let moveDown = true;
+									index === 0 ? moveUp = false : null;
+									(index === pageComponents.length - 1) ? moveDown = false : null;
 									return (
-										<ListItem className={classes.selectedItems}  key={index}>
-											<SubListItem type={c.type} isSelected={true}
+										<ListItem className={classes.selectedItems} key={index}>
+											<SubListItem changeOrder={this.changeComponentOrder} reOrder={true}
+											             type={c.type} isSelected={true}
 											             removeComponentHandler={this.removeComponent}
-
 											             order={index}
+											             moveDown={moveDown}
+											             moveUp={moveUp}
 											             componentIndex={c.id} title={c.title} classes={classes}>
 											</SubListItem>
 										</ListItem>
@@ -79,10 +123,10 @@ class PageEditBuilderComponent extends Component {
 									)
 								})}
 
-							<Typography variant='title'
-							            className={classes.info}>
-								Add components for this page
-							</Typography>
+							{/*<Typography variant='title'*/}
+							            {/*className={classes.info}>*/}
+								{/*Add components for this page*/}
+							{/*</Typography>*/}
 						</List>
 
 

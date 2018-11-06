@@ -16,7 +16,7 @@ class ComponentItemView extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			open: false
+			open: true
 		}
 	}
 
@@ -48,7 +48,7 @@ class ComponentItemView extends Component {
 						{
 							components.map((c, index) => {
 								return (
-									<SubListItem type={c.type} isSelected={false} addComponentHandler={this.props.addComponentHandler}  key={index} componentId={c.id} title={c.title} classes={classes} itemOnSelect={this.handleSelectItem}/>
+									<SubListItem  type={c.type} isSelected={false} addComponentHandler={this.props.addComponentHandler}  key={index} componentId={c.id} title={c.title} classes={classes} itemOnSelect={this.handleSelectItem}/>
 								)
 							})
 						}
